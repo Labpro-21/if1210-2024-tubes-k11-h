@@ -55,14 +55,26 @@ def make_arr(file_name):
             arr.append(b)
     return arr
 
-def SPLIT (sentence, pemisah=','):
-    arr=[]
-    splitted=""
-    for char in sentence:
-        if char==pemisah:
-            arr=arr+[splitted]
-            splitted=""
-        if char!=pemisah:
-            splitted=splitted+char
-    arr=arr+[splitted]
-    return arr
+def write_data(dictionary:dict ):
+    
+    first_key = next(iter(dictionary))
+    many_row=len(dictionary[f'{first_key}'])
+    many_column=len(dictionary)
+    sentence=''
+    idx=0
+
+    for key in dictionary: 
+        if  idx!=many_column-1:
+            sentence=sentence+f'{key}'+';'
+        else:
+            sentence=sentence+f'{key}'+'\n'
+        idx+=1
+    for i in range(many_row):
+        idx=0
+        for key in dictionary:
+            if  idx!=many_column-1:
+                sentence += f"{dictionary[key][i]};"
+            else:
+                sentence=sentence + f"{dictionary[key][i]}\n"
+            idx+=1
+    return sentence
