@@ -44,7 +44,7 @@ def search_index(data, key, value):
     
 def printDict(dictionary):
     for key in dictionary:
-        print(f"{key}: {dictionary[key][0]}")
+        print(f"{key}: {dictionary[key]}")
 
 def make_arr(file_name):
     with open(f'{file_name}', 'r') as file:
