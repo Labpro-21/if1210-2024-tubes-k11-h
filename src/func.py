@@ -132,8 +132,9 @@ def inventory():#F07
     if sudah_login:
         index = search_index(user_data, "username", username) #cari index dimana username berada
         current_user_id = user_data["id"][index] #cari nilai id dengan index yang sama dengan username
+        oc= user_data["oc"][index]
         print(f"=======INVENTORY LIST (User ID: {current_user_id})=======")
-        print(f"Jumlah O.W.C.A. Coin-mu sekarang {900}.")
+        print(f"Jumlah O.W.C.A. Coin-mu sekarang {oc}.")
 
         inventory=make_inventory(current_user_id)
         for key in inventory:
@@ -216,39 +217,10 @@ def battle(inventory:dict):
    __.-'               '-.__
     '''
     print(gambar)
-    num=RNG(0,30)
     level_monst=RNG(1,5)
-    monst=None
-    if 0<=num<5:
-        monst=0
-    elif 5<=num<10:
-        monst=1
-    elif 15<=num<20:
-        monst=2
-    elif 20<=num<25:
-        monst=3
-    else:
-        monst=4
+    monst=RNG(0,len(monster_data['id'])-1)
 
-    potion_dict:dict={}
-    user_monster:dict={}
-    for key in (inventory):
-        id_monst=1
-        id_potion=1
-        if inventory[key]['Type']=='Potion':
-            potion_dict[id_potion]={}
-            potion_dict[id_potion]['Type']=inventory[key]['Potion_Name']
-            potion_dict[id_potion]['Quantity']=inventory[key]['Quantity']
-            id_potion+=1
-        else:
-            user_monster[id_monst]={}
-            user_monster[id_monst]['Name']=inventory[key]['Name']
-            user_monster[id_monst]['ATK_Power']=inventory[key]['ATK_Power']
-            user_monster[id_monst]['DEF_Power']=inventory[key]['DEF_Power']
-            user_monster[id_monst]['HP']=inventory[key]['HP']
-            user_monster[id_monst]['Level']=inventory[key]['Level']
-            id_monst+=1
-
+    user_monster,potion_dict=sperate_monster_potion(inventory)
 
     dict_monst={
         'Name':monster_data['type'][monst],
@@ -258,20 +230,21 @@ def battle(inventory:dict):
         'level': level_monst
     }
 
-    base_not_user_monster=[]   #output --> [atk,def,hp]
+
+    base_not_user_monster=[]   #untuk menampung --> [atk,def,hp]
 
 #mencari nama yang sama dengan yang di input user di file monster
     base_not_user_monster.append(monster_data['atk_power'][monst])        #menambahkan base stats dari monster yang di pilih user
     base_not_user_monster.append(monster_data['def_power'][monst])
     base_not_user_monster.append(monster_data['hp'][monst])
 
-    dict_monst['ATK_Power']=calc_stats(int(dict_monst['level']), int(base_not_user_monster[0]))
+    dict_monst['ATK_Power']=calc_stats(int(dict_monst['level']), int(base_not_user_monster[0])) 
     dict_monst['DEF_Power']=calc_stats(int(dict_monst['level']), int(base_not_user_monster[1]))
     dict_monst['HP']=calc_stats(int(dict_monst['level']), int(base_not_user_monster[2]))
 
     printDict(dict_monst)
     print()
-    print(f"RAWRRR, Monster {dict_monst['Name'][0]} telah muncul !!!")
+    print(f"RAWRRR, Monster {dict_monst['Name']} telah muncul !!!")
     print("============ MONSTER LIST ============")
 
     for key in user_monster:
@@ -305,7 +278,7 @@ def battle(inventory:dict):
          \\  |   |   |
          |  |   |   |
           \\._\\   \\._\ 
-    RAWRRR, Agent X mengeluarkan monster {user_monster[input_monst]['Name']} !!!
+    RAWRRR, {username} mengeluarkan monster {user_monster[input_monst]['Name']} !!!
     '''
     print(gambar)
     print()
@@ -328,6 +301,7 @@ def battle(inventory:dict):
             use_dict=dict_user_monst
             vict_dict=dict_monst
             while pilih==None: #deklarasi pilih none di awalan agar bisa melakukan opsi cancel pada saat memilih potion dan memilih perintah yang lain
+                print()
                 print(f"============ TURN {index} ({use_dict['Name']}) ============")
                 print("1. Attack")
                 print("2. Use Potion")
@@ -376,10 +350,10 @@ def battle(inventory:dict):
             print()
 
     if int(dict_user_monst["HP"])==0:
-        print(f"Yahhh, Anda dikalahkan monster {dict_monst['Name'][0]}. Jangan menyerah, coba lagi !!!")
+        print(f"Yahhh, Anda dikalahkan monster {dict_monst['Name']}. Jangan menyerah, coba lagi !!!")
     else:
-        print(f"Selamat, Anda berhasil mengalahkan monster {dict_monst['Name'][0]} !!!")
-        print("Total OC yang diperoleh: 30")
+        print(f"Selamat, Anda berhasil mengalahkan monster {dict_monst['Name']} !!!")
+        print(f"Total OC yang diperoleh: {RNG(5,30)}")
 
 def attack(dictionary:dict,victim:dict):
     penentu=RNG(-30,30) #mengambil range dari +-30
@@ -410,12 +384,6 @@ def usepotion(potion_dict:dict, dict_user_monst:dict, base, cond_str: bool, cond
             return
         else:
             print("Pilihan nomor tidak tersedia!")
-
-def name_of_potion(pilih:int ,potion_dict:dict):
-    chose=pilih-1       #mengindentifikasi nama potion yang dipilih
-    potion_name=str(potion_dict[chose][0]).upper()
-    potion_name=potion_name.upper()
-    return potion_name
 
 def potion(potion:str, arr:list, base_user_monster:list):      #arr= [atk,def,hp]
     if potion=='STRENGTH':
@@ -670,16 +638,30 @@ def shop_management():
         elif aksi=="keluar":
             shop=False
 
-    
+def sperate_monster_potion (inventory:dict):
+    potion_dict:dict={}
+    user_monster:dict={}
+
+    id_monst=1
+    id_potion=1
+    for key in (inventory):
+        if inventory[key]['Type']=='Potion':
+            potion_dict[id_potion]={}
+            potion_dict[id_potion]['Type']=inventory[key]['Potion_Name']
+            potion_dict[id_potion]['Quantity']=inventory[key]['Quantity']
+            id_potion=id_potion+1
+        else:
+            user_monster[id_monst]={}
+            user_monster[id_monst]['Name']=inventory[key]['Name']
+            user_monster[id_monst]['ATK_Power']=inventory[key]['ATK_Power']
+            user_monster[id_monst]['DEF_Power']=inventory[key]['DEF_Power']
+            user_monster[id_monst]['HP']=inventory[key]['HP']
+            user_monster[id_monst]['Level']=inventory[key]['Level']
+            id_monst=id_monst+1
+    return user_monster,potion_dict
 
 
 sudah_login=True
 username='Agen_P'
-inventory()
-
-
-        
-
-
-
-    
+invent=make_inventory('3')
+battle(invent)
