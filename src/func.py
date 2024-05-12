@@ -660,8 +660,3 @@ def sperate_monster_potion (inventory:dict):
             id_monst=id_monst+1
     return user_monster,potion_dict
 
-
-sudah_login=True
-username='Agen_P'
-invent=make_inventory('3')
-battle(invent)
