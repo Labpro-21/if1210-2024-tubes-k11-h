@@ -24,10 +24,11 @@ while program:
         logout()
     '''
     if masukan =="LOGIN":
-        login_user()
         username = login_user()
     elif masukan=="BATTLE":
         battle(user_inventory, username)
+    elif masukan=="ARENA":
+        arena(username)
     # if masukan == "SHOP":
     #     shop_management()
 
