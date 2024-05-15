@@ -1,5 +1,5 @@
 from func import *
-
+from RNG import *
 user_inventory = make_inventory('5')
 user_monster,user_potion=sperate_monster_potion(user_inventory)
 
@@ -125,7 +125,7 @@ def war(user_potion):
         loop_again=True   #-->untuk menentukan apakah user tdk jadi memilih potion
         turn+=1
         move=False
-        use_dict=None
+        # use_dict=None
         choosen_potion=None
         if turn%2==1:
             use_dict=user_choosen_monster
@@ -172,8 +172,8 @@ def war(user_potion):
                 else:
                     break #jika user memilih potion yang dia ingini maka lanjut ke turn musuh
         else:
-            use_dict=enemy_monster
-            vict_dict=user_choosen_monster
+            use_dict = enemy_monster
+            vict_dict = user_choosen_monster
             print()
             print(f"============ TURN {turn} ({use_dict['Name']}) ============")
             user_choosen_monster=attack(use_dict,vict_dict)
@@ -230,37 +230,39 @@ def enemy_summon(stage=RNG(0,4)):
 
 
 
-def battle(inventory:dict, username):
-    enemy_summon()
-    user_summon(user_monster,username)    
-    war(user_potion)
-
-    if int(user_choosen_monster["HP"])==0:
-        print()
-        print(f"Yahhh, Anda dikalahkan monster {enemy_monster['Name']}. Jangan menyerah, coba lagi !!!")
-        print()
-    else:
-        print()
-        print(f"Selamat, Anda berhasil mengalahkan monster {enemy_monster['Name']} !!!")
-        print(f"Total OC yang diperoleh: {RNG(5,30)}")
-        print()
-        print()
-
-def arena(username):
-    user_monster,user_potion=sperate_monster_potion(user_inventory)
-    user_summon(user_monster, username)
-    win = True
-    stage = 0
-    while win:
-        stage+=1
-        print(f"============= STAGE {stage} =============")
-        enemy_summon(stage)
+def battle(sudah_login, is_admin, username, inventory:dict):
+    if sudah_login and not is_admin:
+        enemy_summon()
+        user_summon(user_monster,username)    
         war(user_potion)
+
         if int(user_choosen_monster["HP"])==0:
+            print()
             print(f"Yahhh, Anda dikalahkan monster {enemy_monster['Name']}. Jangan menyerah, coba lagi !!!")
-            print(f"GAME OVER! Sesi latihan berakhir pada stage {stage}!")
-            win = False
+            print()
         else:
+            print()
             print(f"Selamat, Anda berhasil mengalahkan monster {enemy_monster['Name']} !!!")
-            print(f"STAGE CLEARED! Anda akan mendapatkan {10+20*stage} OC pada sesi ini!")
-            print(f"Memulai stage berikutnya...")
+            print(f"Total OC yang diperoleh: {RNG(5,30)}")
+            print()
+            print()
+
+def arena(sudah_login, is_admin, username):
+    if sudah_login and not is_admin:
+        user_monster,user_potion=sperate_monster_potion(user_inventory)
+        user_summon(user_monster, username)
+        win = True
+        stage = 0
+        while win:
+            stage+=1
+            print(f"============= STAGE {stage} =============")
+            enemy_summon(stage)
+            war(user_potion)
+            if int(user_choosen_monster["HP"])==0:
+                print(f"Yahhh, Anda dikalahkan monster {enemy_monster['Name']}. Jangan menyerah, coba lagi !!!")
+                print(f"GAME OVER! Sesi latihan berakhir pada stage {stage}!")
+                win = False
+            else:
+                print(f"Selamat, Anda berhasil mengalahkan monster {enemy_monster['Name']} !!!")
+                print(f"STAGE CLEARED! Anda akan mendapatkan {10+20*stage} OC pada sesi ini!")
+                print(f"Memulai stage berikutnya...")
