@@ -79,7 +79,20 @@ def logout_user(sudah_login):
         print('Logout gagal!')
         print('Anda belum login, silahkan login terlebih dahulu sebelum melakukan logout')
 
+def exit():
+    global sudah_login, program
+    print("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (y/n)")
+    choice = input("Enter your choice: ")
 
+    if choice == "y":
+        save()
+    elif choice == "n":
+        program = False
+    else:
+        print("Invalid choice. Please try again", end="")
+        for i in range(10):
+            print(".", end="")
+            time.sleep(0.1)
 
 monster_data = fetch_data("../main/data/monster.csv")
 
