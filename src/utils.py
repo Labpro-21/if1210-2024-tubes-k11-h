@@ -46,35 +46,95 @@ def printDict(dictionary):
     for key in dictionary:
         print(f"{key}: {dictionary[key]}")
 
-def make_arr(file_name):
-    with open(f'{file_name}', 'r') as file:
-        next(file)
-        arr=[]
-        for line in file:
-            b=parser(line)
-            arr.append(b)
-    return arr
 
-def write_data(dictionary:dict ):
-    
-    first_key = next(iter(dictionary))
-    many_row=len(dictionary[f'{first_key}'])
+def write_dict_of_arr(dictionary:dict ):
+    first_elem=None
+
+    for key in dictionary:
+        first_elem=key
+        break
+
+    many_row=len(dictionary[first_elem])
     many_column=len(dictionary)
     sentence=''
-    idx=0
 
+    idx=0
     for key in dictionary: 
         if  idx!=many_column-1:
             sentence=sentence+f'{key}'+';'
         else:
             sentence=sentence+f'{key}'+'\n'
         idx+=1
+
+    idx=0
+    print(dictionary)
     for i in range(many_row):
         idx=0
         for key in dictionary:
+            print(idx, 2)
             if  idx!=many_column-1:
-                sentence += f"{dictionary[key][i]};"
+                sentence += f"{dictionary[key][i]}"+';'
             else:
-                sentence=sentence + f"{dictionary[key][i]}\n"
+                sentence=sentence + f"{dictionary[key][i]}"+"\n"
             idx+=1
+    return sentence
+
+
+def write_monst_inventory(monster_inventory_data, monst, id, monster_data):
+    arr_modified=[]
+    print(monst)
+
+    for key in monst:   #aku pengen outputnya agar bentuknya [id, monst_id, level]
+        monst_id=str(search_index(monster_data, 'type', monst[key]["Name"])+1)
+        monst_level=str(monst[key]['Level'])
+        arr_modified.append([id, monst_id, monst_level])
+    
+    sentence=write_dict_of_dict(monster_inventory_data, arr_modified, 'quantity', id)
+    return sentence
+
+def write_item_inventory(item_inventory_data , item, id ):
+    arr_modified=[]
+
+    for key in item:   #aku pengen outputnya agar bentuknya [id, monst_id, level]
+        potion_name=str(item[key]["Type"])
+        quantity=str(item[key]['Quantity'])
+        arr_modified.append([id, potion_name, quantity])
+    sentence=write_dict_of_dict(item_inventory_data, arr_modified, 'quantity', id)
+    return sentence
+
+def write_dict_of_dict(data, arr_modified, last_column, id):
+    sentence=''
+    many_column=len(data)
+    already_modified=False
+    first_elem=None
+    idx=0
+
+    for key in data:
+        first_elem=key
+        break
+
+    for key in data: 
+        if  idx!=many_column-1:
+            sentence=sentence+f'{key}'+';'
+        else:
+            sentence=sentence+f'{key}'+'\n'
+        idx+=1
+
+    idx=0
+
+    for i in  range (len(data[f'{first_elem}'])):
+        for key in data:
+            item=data[key][idx]
+            user_id=data[f'{first_elem}'][idx]
+            if not already_modified and int(user_id) == int(id):
+                for elem in arr_modified:
+                    sentence=sentence + elem[0]+';'+ elem[1]+ ';'+ elem[2]+ '\n'
+                already_modified=True
+            elif key==f'{last_column}' and int(user_id) != int(id):
+                sentence=sentence +f"{item}"+ "\n" 
+            elif int(user_id) != int(id) and idx!=many_column-1:
+                sentence= sentence + f'{item}' + ';'
+
+            continue
+        idx+=1
     return sentence
