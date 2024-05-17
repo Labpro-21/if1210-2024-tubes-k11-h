@@ -26,25 +26,27 @@ while program:
         sudah_login, username = help(sudah_login, is_admin, username)
     elif masukan == "LOGOUT":
         sudah_login = logout_user(sudah_login)
+    elif masukan == "EXIT":
+        program = exit(program)
 
-
-    #AKSES: AGENT
-    elif masukan=="INVENTORY":
-        inventory(sudah_login, is_admin, username)
-    elif masukan=="BATTLE":
-        battle(sudah_login, is_admin, username, user_inventory)
-    elif masukan=="ARENA":
-        arena(sudah_login, is_admin, username)
-    # elif masukan=="SHOP & CURRENCY":
-    #     shop_currency(sudah_login, username)
-    elif masukan=="LABORATORY":
-        laboratory(sudah_login, is_admin, username)
-    
+    if sudah_login:
+        if is_admin:#AKSES: ADMIN
+            if masukan == "SHOP":
+                shop_management()
+            elif masukan == "MONSTER":
+                monster_management()
+        else: #AKSES: AGENT   
+            if masukan=="INVENTORY":
+                inventory(username)
+            elif masukan=="BATTLE":
+                battle(username, user_inventory)
+            elif masukan=="ARENA":
+                arena(username)
+            # elif masukan=="SHOP & CURRENCY":
+            #     shop_currency(sudah_login, username)
+            elif masukan=="LABORATORY":
+                laboratory(username)
         
-    #AKSES: ADMIN
-    elif masukan == "SHOP":
-        shop_management(sudah_login, is_admin)
-    elif masukan == "MONSTER":
-        monster_management(sudah_login, is_admin)
+        
 
 
