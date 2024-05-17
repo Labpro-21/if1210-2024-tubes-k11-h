@@ -1,7 +1,7 @@
 from func import *
 from RNG import *
 user_inventory = make_inventory('5')
-user_monster,user_potion=separate_monster_potion(user_inventory)
+user_monster,user_potion=separate_monster_item_inventory(user_inventory)
 
 
 def attack(dictionary:dict,victim:dict):
@@ -13,7 +13,7 @@ def attack(dictionary:dict,victim:dict):
     printDict(victim)
     return victim
 
-def usepotion(user_potion:dict, user_choosen_monster:dict, base, cond_str: bool, cond_def:bool, cond_heal:bool,choosen_potion:int):
+def usepotion(user_potion:dict, user_choosen_monster:dict, base_hp, cond_str: bool, cond_def:bool, cond_heal:bool,choosen_potion:int):
     move=False
     while not move:
         if choosen_potion<=len(user_potion):
@@ -21,11 +21,11 @@ def usepotion(user_potion:dict, user_choosen_monster:dict, base, cond_str: bool,
             print(user_choosen_monster)
             arr=[user_choosen_monster['ATK_Power']]+[user_choosen_monster['DEF_Power']]+[user_choosen_monster['HP']] #membuat array stast monster
             if potion_name=='STRENGTH' and not cond_str:
-                user_choosen_monster['ATK_Power']=str(potion(potion_name, arr, base )) #mengupdate banyaknya potion yang ada setelah digunakan
+                user_choosen_monster['ATK_Power']=str(potion(potion_name, arr, base_hp)) 
             elif potion_name=='RESILIENCE' and not cond_def:
-                user_choosen_monster['DEF_Power']=str(potion(potion_name, arr, base ))#mengupdate banyaknya potion yang ada setelah digunakan
+                user_choosen_monster['DEF_Power']=str(potion(potion_name, arr, base_hp))
             elif potion_name=='HEALING' and not cond_heal:
-                user_choosen_monster['HP']=str(potion(potion_name, arr, base ))#mengupdate banyaknya potion yang ada setelah digunakan
+                user_choosen_monster['HP']=str(potion(potion_name, arr, base_hp ))
             else:
                 print(f"Kamu mencoba memberikan ramuan ini kepada {user_choosen_monster['Name']}, namun dia menolaknya seolah-olah dia memahami ramuan tersebut sudah tidak bermanfaat lagi.")
             return user_choosen_monster
@@ -34,7 +34,7 @@ def usepotion(user_potion:dict, user_choosen_monster:dict, base, cond_str: bool,
         else:
             print("Pilihan nomor tidak tersedia!")
 
-def potion(potion:str, arr:list, base_attr_user_monster:list):      #arr= [atk,def,hp]
+def potion(potion:str, arr:list, base_hp):      #arr= [atk,def,hp]
     if potion=='STRENGTH':
         new= int(arr[0])+0.05*int(arr[0])
         print("Setelah meminum ramuan ini, aura kekuatan terlihat mengelilingi Pikachow dan gerakannya menjadi lebih cepat dan mematikan.")
@@ -44,7 +44,7 @@ def potion(potion:str, arr:list, base_attr_user_monster:list):      #arr= [atk,d
         print("Setelah meminum ramuan ini, muncul sebuah energi pelindung di sekitar Pikachow yang membuatnya terlihat semakin tangguh dan sulit dilukai.")
         return int(new)
     elif potion=='HEALING':
-        hp= int(arr[2])+0.25*int(base_attr_user_monster[2])
+        hp= int(arr[2])+0.25*int(base_hp)
         print("Setelah meminum ramuan ini, luka-luka yang ada di dalam tubuh Pikachow sembuh dengan cepat. Dalam sekejap, Pikachow terlihat kembali prima dan siap melanjutkan pertempuran.")
         if int(arr[2])>hp:
             return int(hp) #jika heal melebihi hp monster saat ini
@@ -69,15 +69,13 @@ def input_potion(user_potion:dict):
     return choosen_potion
 
 def user_summon(user_monster:dict, username):
-    global user_choosen_monster
-    global base_attr_user_monster
     print("Selamat datang di Arena!!")
     print("============ MONSTER LIST ============")
     for key in user_monster:
         print(f"{key}. {user_monster[key]['Name']}")
     input_monst=None
     done_choosing=False
-    base_attr_user_monster=[]
+    
     while not done_choosing:
         input_monst=int(input("Pilih monster untuk bertarung: "))
         if input_monst>len(user_monster):
@@ -89,9 +87,7 @@ def user_summon(user_monster:dict, username):
 
     for i, elem in enumerate (monster_data['type']):
         if elem[i]==user_monster[input_monst]['Name']: #mencari nama yang sama dengan yang di input user di file monster
-            base_attr_user_monster.append(monster_data['atk_power'][i])        #menambahkan base stats dari monster yang di pilih user
-            base_attr_user_monster.append(monster_data['def_power'][i])
-            base_attr_user_monster.append(monster_data['hp'][i])
+            base_hp = monster_data['hp'][i]
             break
 
     gambar = f'''
@@ -113,10 +109,10 @@ def user_summon(user_monster:dict, username):
 
     user_choosen_monster=user_monster[input_monst]
 
-    printDict(user_choosen_monster)    
+    printDict(user_choosen_monster) 
+    return user_choosen_monster, base_hp 
 
-def war(user_potion):
-    global user_choosen_monster, enemy_monster
+def war(user_potion, user_choosen_monster, enemy_monster, base_hp):
     drink_strength=False
     drink_def=False
     drink_heal=False
@@ -150,7 +146,7 @@ def war(user_potion):
                             break
                         loop_again=False
                         potion_name=user_potion[choosen_potion]['Type']
-                        user_choosen_monster=usepotion(user_potion, user_choosen_monster, base_attr_user_monster, drink_strength,drink_def,drink_heal,choosen_potion)
+                        user_choosen_monster=usepotion(user_potion, user_choosen_monster, base_hp, drink_strength,drink_def,drink_heal,choosen_potion)
                         if potion_name=='STRENGTH' and not drink_strength :   #mengubah kondisi agar setiap jenis potion hanya bisa 1 kali penggunaan
                             drink_strength=True
                             user_potion[choosen_potion]['Quantity']=str(int(user_potion[choosen_potion]['Quantity'])-1)
@@ -178,10 +174,9 @@ def war(user_potion):
             print(f"============ TURN {turn} ({use_dict['Name']}) ============")
             user_choosen_monster=attack(use_dict,vict_dict)
             print()
+    return user_potion
 
-
-def enemy_summon(stage=RNG(0,4)):
-    global monster_data,monster_inventory_data, enemy_monster
+def enemy_summon(monster_data, stage=RNG(0,4) ):
     gambar = '''
            _/\----/\   
           /         \     /\\
@@ -224,45 +219,51 @@ def enemy_summon(stage=RNG(0,4)):
     print()
     print(f"RAWRRR, Monster {enemy_monster['Name']} telah muncul !!!")
 
+    return enemy_monster
 
 
 
 
 
+def battle(username, user_monster, user_potion, monster_data,current_oc=0):
 
-def battle(username, inventory:dict):
+    enemy_monster = enemy_summon(monster_data)
+    user_choosen_monster, base_hp = user_summon(user_monster,username)    
+    user_potion = war(user_potion, user_choosen_monster, enemy_monster,base_hp)
 
-    enemy_summon()
-    user_summon(user_monster,username)    
-    war(user_potion)
-
-    if int(user_choosen_monster["HP"])==0:
+    if int(user_choosen_monster["HP"])<=0:
         print()
         print(f"Yahhh, Anda dikalahkan monster {enemy_monster['Name']}. Jangan menyerah, coba lagi !!!")
         print()
     else:
+        oc_gained = RNG(5,30)
+        current_oc+=oc_gained
         print()
         print(f"Selamat, Anda berhasil mengalahkan monster {enemy_monster['Name']} !!!")
-        print(f"Total OC yang diperoleh: {RNG(5,30)}")
+        print(f"Total OC yang diperoleh: {oc_gained}")
         print()
         print()
+    return user_potion, current_oc
 
-def arena(sudah_login, is_admin, username):
+def arena(username, current_oc=0):
 
-    user_monster,user_potion=separate_monster_potion(user_inventory)
-    user_summon(user_monster, username)
+    user_monster,user_potion=separate_monster_item_inventory(user_inventory)
+    user_choosen_monster,base_hp = user_summon(user_monster, username)
     win = True
     stage = 0
-    while win:
+    while win and stage<5:
         stage+=1
         print(f"============= STAGE {stage} =============")
-        enemy_summon(stage)
-        war(user_potion)
+        enemy_monster = enemy_summon(monster_data,stage)
+        user_potion = war(user_potion, user_choosen_monster, enemy_monster, base_hp)
         if int(user_choosen_monster["HP"])==0:
             print(f"Yahhh, Anda dikalahkan monster {enemy_monster['Name']}. Jangan menyerah, coba lagi !!!")
             print(f"GAME OVER! Sesi latihan berakhir pada stage {stage}!")
             win = False
         else:
+            oc_gained = 10+20*stage
+            current_oc+=oc_gained
             print(f"Selamat, Anda berhasil mengalahkan monster {enemy_monster['Name']} !!!")
-            print(f"STAGE CLEARED! Anda akan mendapatkan {10+20*stage} OC pada sesi ini!")
+            print(f"STAGE CLEARED! Anda akan mendapatkan {oc_gained} OC pada sesi ini!")
             print(f"Memulai stage berikutnya...")
+    return user_potion,current_oc

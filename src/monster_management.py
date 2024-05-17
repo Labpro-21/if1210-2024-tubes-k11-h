@@ -1,8 +1,7 @@
 from utils import fetch_data
 
 
-def monster_management():
-    monster_data = fetch_data('../main/data/monster.csv')
+def monster_management(monster_data):
     new:dict=monster_data
     
     print("SELAMAT DATANG DI DATABASE PARA MONSTER !!!")
@@ -79,5 +78,6 @@ def monster_management():
 
             return new
 
-        
+asik = monster_management()
             
+print(asik)

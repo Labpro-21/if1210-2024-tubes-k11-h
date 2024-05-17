@@ -1,6 +1,6 @@
 import time
 from utils import search_index,parser,printDict,fetch_data
-
+from globevar import *
 #REALISASI FUNGSI-FUNGSI
 
 
@@ -41,7 +41,8 @@ def register_user(sudah_login, user_data): #F01
         monsters = ["Charizard", "Bulbasaur", "Aspal"]
         print(f"Selamat datang Agent {username}. Mari kita mengalahkan Dr. Asep Spakbor dengan {monsters[monster_choice-1]}!")
         sudah_login = True
-        return sudah_login,username
+        id = len(user_data["id"])+1
+        return sudah_login,username,id,user_data
 
 def login_user(sudah_login): #F02
     if sudah_login:
@@ -62,7 +63,10 @@ def login_user(sudah_login): #F02
                 else:
                     is_admin = False
                 sudah_login = True
-                return (sudah_login, username, is_admin)
+                index = search_index(user_data, "username", username) #cari index dimana username berada
+                id = user_data["id"][index]
+                current_oc = user_data["oc"][index]
+                return (sudah_login, username, is_admin, id, current_oc)
             else:
                 print("Password salah!")
                 print()
@@ -96,14 +100,13 @@ def exit(program):
 
 
 
-def inventory(username):#F07
+def inventory(username, id):#F07
     index = search_index(user_data, "username", username) #cari index dimana username berada
-    current_user_id = user_data["id"][index] #cari nilai id dengan index yang sama dengan username
     oc = user_data["oc"][index]
-    print(f"=======INVENTORY LIST (User ID: {current_user_id})=======")
+    print(f"=======INVENTORY LIST (User ID: {id})=======")
     print(f"Jumlah O.W.C.A. Coin-mu sekarang {oc}.")
 
-    inventory = make_inventory(current_user_id)
+    inventory = make_inventory(id)
     for key in inventory:
         if inventory[key]['Type']=='Monster':
             tipe=inventory[key]['Type']
