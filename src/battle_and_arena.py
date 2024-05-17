@@ -1,7 +1,7 @@
 from func import *
 from RNG import *
 user_inventory = make_inventory('5')
-user_monster,user_potion=sperate_monster_potion(user_inventory)
+user_monster,user_potion=separate_monster_potion(user_inventory)
 
 
 def attack(dictionary:dict,victim:dict):
@@ -249,7 +249,7 @@ def battle(username, inventory:dict):
 
 def arena(sudah_login, is_admin, username):
 
-    user_monster,user_potion=sperate_monster_potion(user_inventory)
+    user_monster,user_potion=separate_monster_potion(user_inventory)
     user_summon(user_monster, username)
     win = True
     stage = 0
