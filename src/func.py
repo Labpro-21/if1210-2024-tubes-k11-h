@@ -389,7 +389,7 @@ def shop_management(is_admin):
             elif aksi=="keluar":
                 shop=False
 
-def separate_monster_potion (inventory:dict):
+def separate_monster_item_inventory (inventory:dict):
     potion_dict:dict={}
     user_monster:dict={}
 
