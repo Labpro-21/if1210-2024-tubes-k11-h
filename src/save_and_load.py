@@ -5,11 +5,11 @@ from func import make_inventory,separate_monster_item_inventory
 
 def load():
     parser = argparse.ArgumentParser(description="Jalankan game dengan folder progres yang diberikan.")
-    parser.add_argument('folder_name', type=str, nargs='?', default='default_data', help="Nama folder tempat progres pemain disimpan")
+    parser.add_argument('folder_name', type=str, nargs='?', default='default_data', help="Nama folder tempat progres peif1210-2024-tubes-k11-h disimpan")
 
     args = parser.parse_args()
     result=args.folder_name
-    parent_directory = '../main/data'
+    parent_directory = '../if1210-2024-tubes-k11-h/data'
     path=parent_directory+'/'+result
 
     item_shop_data= fetch_data(f'{parent_directory}/item_shop_inventory.csv')
@@ -24,7 +24,7 @@ def load():
 
 def save(id: str, user_data: dict,monster_inventory_data: dict,item_inventory_data:dict, monster_shop:dict,item_shop:dict, monster_data:dict, is_admin:bool):
 
-    parent_directory = '../main/data'
+    parent_directory = '../if1210-2024-tubes-k11-h/data'
     
     if is_admin:
 

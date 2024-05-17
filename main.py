@@ -1,20 +1,22 @@
 import sys
 sys.path.append('src')
+import argparse
 
 from battle_and_arena import battle, arena
 from func import *
-from globevar import *
 from utils import fetch_data
 from menu_and_help import help
 from laboratory import laboratory
 from monster_management import monster_management
+from save_and_load import save, load
 
 id='5' #dummy id
 sudah_login=False
 is_admin=False
 program = True
-user_data = fetch_data('../main/data/user.csv')
-user_inventory = make_inventory(id)
+
+user_data,monster_data,monster_inventory_data,item_inventory_data,item_shop_data,monster_shop_data=load()
+
 while program:
     
     masukan = input(">>>").upper()
