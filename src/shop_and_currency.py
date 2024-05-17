@@ -46,7 +46,6 @@ def shop():
         user_oc = user_oc_data["oc"]
         print(f"Jumlah O.W.C.A. Coin-mu sekarang {user_oc}")
         beli_apa = int(input("Mau beli apa? (monster/potion) "))
-        harga = 0
         z = True
 
         if beli_apa == "monster":
@@ -71,7 +70,7 @@ def shop():
                         harga_monster = monster_shop_data["price"]
 
                         if (user_oc == harga_monster) or ( user_oc >= harga_monster):
-                            user_oc = user_oc - harga
+                            user_oc = user_oc - harga_monster
                             print(f"Berhasil membeli item: {pilih_monster}. Item sudah masuk ke inventory-mu!")
                             print(f"Jumlah O.W.C.A. Coin-mu sekarang {user_oc}")
                             z = False # memberhentikan looping
