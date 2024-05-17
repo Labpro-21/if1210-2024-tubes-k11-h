@@ -89,7 +89,7 @@ def write_monst_inventory(monster_inventory_data, monst, id, monster_data):
         monst_level=str(monst[key]['Level'])
         arr_modified.append([id, monst_id, monst_level])
     
-    sentence=write_dict_of_dict(monster_inventory_data, arr_modified, 'quantity', id)
+    sentence=write_dict_of_dict(monster_inventory_data, arr_modified, 'level', id)
     return sentence
 
 def write_item_inventory(item_inventory_data , item, id ):

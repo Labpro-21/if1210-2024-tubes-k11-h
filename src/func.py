@@ -1,5 +1,5 @@
 import time
-from globevar import user_data,monster_inventory_data,item_inventory_data,monster_data,arr_item,sudah_login
+from globevar import user_data,monster_inventory_data,item_inventory_data,monster_data,sudah_login
 from utils import search_index,parser,printDict,fetch_data
 
 #REALISASI FUNGSI-FUNGSI
