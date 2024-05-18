@@ -1,6 +1,3 @@
-from utils import fetch_data
-
-
 def monster_management(monster_data):
     new:dict=monster_data
     
@@ -29,7 +26,7 @@ def monster_management(monster_data):
         nama_monster = input("Masukkan Type/Nama: ")
         i = 0
         isterdaftar = False
-        while isterdaftar == False and i < len(monster_data["id"]):
+        while not isterdaftar and i < len(monster_data["id"]):
             if monster_data['type'][i] == nama_monster:
                 isterdaftar = True
             else:
@@ -64,8 +61,8 @@ def monster_management(monster_data):
             print(f"DEF Power: {def_power}")
             print(f"HP: {hp} ")
 
-            tambah_monster = input("Tambahkan Monster ke database (Yes/No): ")
-            if tambah_monster == "Yes":
+            tambah_monster = input("Tambahkan Monster ke database (Yes/No): ").upper()
+            if tambah_monster == "YES":
                 new_id= len(monster_data['id'])+1
                 new['id'].append(str(new_id))
                 new['type'].append(str(nama_monster))
@@ -73,11 +70,7 @@ def monster_management(monster_data):
                 new['def_power'].append(str(def_power))
                 new['hp'].append(str(hp))
                 print("Monster baru telah ditambahkan!")
-            elif tambah_monster == "No":
+            elif tambah_monster == "NO":
                 print("Monster gagal ditambahkan!")
 
             return new
-
-asik = monster_management()
-            
-print(asik)

@@ -67,11 +67,11 @@ def write_dict_of_arr(dictionary:dict ):
         idx+=1
 
     idx=0
-    print(dictionary)
+
     for i in range(many_row):
         idx=0
         for key in dictionary:
-            print(idx, 2)
+
             if  idx!=many_column-1:
                 sentence += f"{dictionary[key][i]}"+';'
             else:

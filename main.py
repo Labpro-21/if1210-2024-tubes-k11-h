@@ -38,18 +38,18 @@ while program:
             if masukan == "SHOP":
                 shop_management()
             elif masukan == "MONSTER":
-                monster_management()
+                monster_data = monster_management(monster_data) #AMAN
         else: #AKSES: AGENT   
             if masukan=="INVENTORY":
                 inventory(username, id) #AMAN
             elif masukan=="BATTLE": #AMAN
-                user_potion, current_oc =battle(username, user_monster, user_potion, monster_data,current_oc)
+                user_potion, current_oc = battle(username, user_monster, user_potion, monster_data,current_oc)
             elif masukan=="ARENA": #AMAN
-                arena(username, current_oc)
+                user_potion, current_oc = arena(username, current_oc)
             elif masukan=="SHOP":
                 shop(sudah_login, username)
             elif masukan=="LABORATORY":
-                laboratory(username)
+                user_monster, current_oc = laboratory(username,current_oc, user_monster) #AMAN
         
         
 
