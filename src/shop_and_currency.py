@@ -135,4 +135,4 @@ def shop(monster_shop_data,user_data, item_shop_data, user_monster, monster_data
                 user_potion, user_oc, item_shop_data=beli_potion(item_shop_data, user_potion, user_oc)
             continue
         elif action_shop=='keluar' or action_shop=='Keluar' or action_shop=='KELUAR':
-            return user_monster, user_potion, user_oc
+            return user_monster, user_potion, user_oc, item_shop_data  
