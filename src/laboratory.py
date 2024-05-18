@@ -7,7 +7,7 @@ def laboratory(username,current_oc, user_monster):
     print(f"Selamat datang di lab agent {username}")
     print("============ MONSTER LIST ============")
     for i, key in enumerate(user_monster):
-        print(f"{i+1}. {user_monster[key]['Name']} (Level: {user_monster[key]["Level"]})")
+        print(f"{i+1}. {user_monster[key]['Name']} (Level: {user_monster[key]['Level']})")
     print("============ UPGRADE PRICE ============")
     print("1. Level 1 -> Level 2: 250 OC")
     print("2. Level 2 -> Level 3: 450 OC")

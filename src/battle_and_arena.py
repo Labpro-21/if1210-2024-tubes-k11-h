@@ -1,7 +1,5 @@
 from func import *
 from RNG import *
-user_inventory = make_inventory('5')
-user_monster,user_potion=separate_monster_item_inventory(user_inventory)
 
 
 def attack(dictionary:dict,victim:dict):
@@ -68,7 +66,7 @@ def input_potion(user_potion:dict):
         choosen_potion = int(input("Pilih perintah: "))
     return choosen_potion
 
-def user_summon(user_monster:dict, username):
+def user_summon(user_monster:dict, username, monster_data):
     print("Selamat datang di Arena!!")
     print("============ MONSTER LIST ============")
     for key in user_monster:
@@ -228,7 +226,7 @@ def enemy_summon(monster_data, stage=RNG(0,4) ):
 def battle(username, user_monster, user_potion, monster_data,current_oc=0):
 
     enemy_monster = enemy_summon(monster_data)
-    user_choosen_monster, base_hp = user_summon(user_monster,username)    
+    user_choosen_monster, base_hp = user_summon(user_monster, username, monster_data)    
     user_potion = war(user_potion, user_choosen_monster, enemy_monster,base_hp)
 
     if int(user_choosen_monster["HP"])<=0:
@@ -245,10 +243,9 @@ def battle(username, user_monster, user_potion, monster_data,current_oc=0):
         print()
     return user_potion, current_oc
 
-def arena(username, current_oc=0):
+def arena(username, user_monster, user_potion, monster_data,current_oc=0):
 
-    user_monster,user_potion=separate_monster_item_inventory(user_inventory)
-    user_choosen_monster,base_hp = user_summon(user_monster, username)
+    user_choosen_monster,base_hp = user_summon(user_monster, username, monster_data)
     win = True
     stage = 0
     while win and stage<5:

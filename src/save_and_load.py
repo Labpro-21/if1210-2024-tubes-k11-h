@@ -12,7 +12,7 @@ def load():
     parent_directory = '../if1210-2024-tubes-k11-h/data'
     path=parent_directory+'/'+result
 
-    item_shop_data= fetch_data(f'{parent_directory}/item_shop_inventory.csv')
+    item_shop_data= fetch_data(f'{parent_directory}/item_shop.csv')
     monster_shop_data= fetch_data(f'{parent_directory}/monster_shop.csv')
     monster_data= fetch_data(f'{parent_directory}/monster.csv')
     user_data = fetch_data(f'{path}/user.csv')

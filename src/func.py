@@ -1,11 +1,11 @@
 import time
-from utils import search_index,parser,printDict,fetch_data
-from globevar import *
+from utils import search_index,printDict,isallnumber,validate_input
+
 #REALISASI FUNGSI-FUNGSI
 
 
 
-def register_user(sudah_login, user_data): #F01
+def register_user(sudah_login, user_data,monster_inventory_data, monster_data, item_inventory_data): #F01
     if sudah_login: #ngecek udah login atau belum
         print("Register gagal!")
         print("Anda telah login dengan username Purry, silahkan lakukan “LOGOUT” sebelum melakukan login kembali")
@@ -14,37 +14,49 @@ def register_user(sudah_login, user_data): #F01
         username = input("Masukkan username: ")
         password = input("Masukkan password: ")
         # ngecek username valid atau engga
-        if not username.isalnum() and "_" not in username and "-" not in username:
+        if not validate_input(username):
             print("Username hanya boleh berisi alfabet, angka, underscore, dan strip!")
-            return
-
+            register_user(sudah_login, user_data)
         # ngecek udah dipake atau belum
-        if username in user_data['username']:
+        elif username in user_data['username']:
             print(f"Username {username} sudah terpakai, silahkan gunakan username lain!")
-            return
+            register_user(sudah_login, user_data)
+        else:
+            # registrasi, isi data
+            user_data["id"].append(str(len(user_data["id"])+1)) 
+            user_data["username"].append(username)
+            user_data["password"].append(password)
+            user_data["role"].append("agent")
+            user_data["oc"].append("0")
 
-        # registrasi, isi data
-        user_data["id"].append(str(len(user_data["id"])+1)) 
-        user_data["username"].append(username)
-        user_data["password"].append(password)
-        user_data["role"].append("agent")
-        user_data["oc"].append("0")
+            # pilih monster
+            print("Silahkan pilih salah satu monster sebagai monster awalmu.")
+            print("1. Pikachow")
+            print("2. Bulbu")
+            print("3. Zeze")
+            monster_choice = int(input("Monster pilihanmu: "))
 
-        # pilih monster
-        print("Silahkan pilih salah satu monster sebagai monster awalmu.")
-        print("1. Charizard")
-        print("2. Bulbasaur")
-        print("3. Aspal")
-        monster_choice = int(input("Monster pilihanmu: "))
+            # Print welcome
+            monsters = ["Pikachow", "Bulbu", "Zeze"]
+            print(f"Selamat datang Agent {username}. Mari kita mengalahkan Dr. Asep Spakbor dengan {monster_data['type'][monster_choice-1]}!")
+            sudah_login = True
+            id = len(user_data["id"])
+            user_monster, user_potion = separate_monster_item_inventory(make_inventory(id, monster_inventory_data, monster_data, item_inventory_data))
+            user_monster[1] = {'Type': 'Monster',
+                                'Name'      : monsters[monster_choice-1],
+                                'ATK_Power' : monster_data['atk_power'][monster_choice-1],
+                                'DEF_Power' : monster_data['def_power'][monster_choice-1],
+                                'HP'        : monster_data['hp'][monster_choice-1],
+                                'Level'     : '1'}
+            
+            monster_inventory_data["user_id"].append(str(id))
+            monster_inventory_data["monster_id"].append(str(monster_choice))
+            monster_inventory_data["level"].append('1')
+            # print(user_monster)
+            # print(monster_inventory_data)
+            return sudah_login,username,id,user_data,user_monster,user_potion, monster_inventory_data
 
-        # Print welcome
-        monsters = ["Charizard", "Bulbasaur", "Aspal"]
-        print(f"Selamat datang Agent {username}. Mari kita mengalahkan Dr. Asep Spakbor dengan {monsters[monster_choice-1]}!")
-        sudah_login = True
-        id = len(user_data["id"])+1
-        return sudah_login,username,id,user_data
-
-def login_user(sudah_login): #F02
+def login_user(sudah_login, user_data): #F02
     if sudah_login:
         print("Login gagal!")
         print("Anda telah login dengan username Purry, silahkan lakukan \“LOGOUT\” sebelum melakukan login kembali")
@@ -100,13 +112,11 @@ def exit(program):
 
 
 
-def inventory(username, id):#F07
-    index = search_index(user_data, "username", username) #cari index dimana username berada
-    oc = user_data["oc"][index]
+def inventory(id, current_oc, monster_inventory_data, monster_data, item_inventory_data):#F07
+    
     print(f"=======INVENTORY LIST (User ID: {id})=======")
-    print(f"Jumlah O.W.C.A. Coin-mu sekarang {oc}.")
-
-    inventory = make_inventory(id)
+    print(f"Jumlah O.W.C.A. Coin-mu sekarang {current_oc}.")
+    inventory = make_inventory(id, monster_inventory_data, monster_data, item_inventory_data)
     for key in inventory:
         if inventory[key]['Type']=='Monster':
             tipe=inventory[key]['Type']
@@ -121,10 +131,11 @@ def inventory(username, id):#F07
             print(f"{key}. {tipe} (Type: {potion_name}, Qty: {quantity}) ")
 
     print()
-    pilihan = input("Ketikkan id untuk menampilkan detail item: ")
+    print("Ketikkan id untuk menampilkan detail item:")
+    pilihan = input(">>> ").upper()
     print()
-    while pilihan!=">>> KELUAR":
-        if int(pilihan)<=(len(inventory)):
+    while pilihan!="KELUAR":
+        if int(pilihan)<=(len(inventory)) and isallnumber(pilihan):
             printDict(inventory[int(pilihan)])
         else:
             print("Tidak dapat menampilkan detail item")
@@ -137,16 +148,19 @@ def calc_stats(level:int, base_stats:int):
     battle_stats=int(base_stats)+(level-1)*0.1*int(base_stats)
     return int(battle_stats)            #output --> [atk,def,hp]
 
-def make_inventory(current_user_id):
+def make_inventory(user_id, monster_inventory_data, monster_data, item_inventory_data):
     id=1
     inventory = {}
     for i in range(len(monster_inventory_data["user_id"])): #iterasi semua data pada monster_inventory
-        if monster_inventory_data["user_id"][i]==current_user_id:
-            monster_name = monster_data["type"][i]
-            monster_level = int(monster_inventory_data["level"][i])
-            monster_hp = calc_stats(monster_level, int(monster_data["hp"][i]))
-            monster_atk = calc_stats(monster_level, int(monster_data["atk_power"][i]))
-            monster_def = calc_stats(monster_level, int(monster_data["def_power"][i]))
+
+        if int(monster_inventory_data["user_id"][i])==int(user_id):
+            monster_id = monster_inventory_data["monster_id"][i]
+            index = search_index(monster_data, "id", monster_id)
+            monster_name = monster_data["type"][index]
+            monster_level = int(monster_inventory_data["level"][index])
+            monster_hp = calc_stats(monster_level, int(monster_data["hp"][index]))
+            monster_atk = calc_stats(monster_level, int(monster_data["atk_power"][index]))
+            monster_def = calc_stats(monster_level, int(monster_data["def_power"][index]))
 
             inventory[id] = {'Type': 'Monster',
                                 'Name'      : monster_name,
@@ -159,7 +173,7 @@ def make_inventory(current_user_id):
 
 
     for i in range(len(item_inventory_data["user_id"])): #iterasi semua data pada item_inventory
-        if item_inventory_data["user_id"][i]==current_user_id:
+        if item_inventory_data["user_id"][i]==id:
             item_type = item_inventory_data["type"][i]
             item_quantity = item_inventory_data["quantity"][i]
 
@@ -171,7 +185,7 @@ def make_inventory(current_user_id):
     return inventory
 
 
-def shop_management(monster_shop_data,item_shop_data):
+def shop_management(monster_data,monster_shop_data,item_shop_data, item_inventory_data):
 
     shop = True
     print("Irasshaimase! Selamat datang kembali, Mr. Monogram!")

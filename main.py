@@ -22,10 +22,12 @@ while program:
     
     masukan = input(">>>").upper()
     if masukan == "REGISTER":
-        sudah_login, username, id, user_data = register_user(sudah_login, user_data)
+        sudah_login,username,id,user_data,user_monster,user_potion, monster_inventory_data = register_user(sudah_login, user_data, monster_inventory_data, monster_data, item_inventory_data)
+        current_oc = 0
+        
     elif masukan =="LOGIN":
-        sudah_login, username, is_admin, id,current_oc = login_user(sudah_login)
-        user_monster, user_potion = separate_monster_item_inventory(make_inventory(id))
+        sudah_login, username, is_admin, id,current_oc = login_user(sudah_login, user_data)
+        user_monster, user_potion = separate_monster_item_inventory(make_inventory(id, monster_inventory_data, monster_data, item_inventory_data))
     elif masukan =="HELP":
         sudah_login, username = help(sudah_login, is_admin, username)
     elif masukan == "LOGOUT":
@@ -34,18 +36,20 @@ while program:
         program = exit(program)
 
     if sudah_login:
+        if masukan == "SAVE":
+            save(id, user_data,monster_inventory_data,item_inventory_data, monster_shop_data,item_shop_data, monster_data, is_admin)
         if is_admin:#AKSES: ADMIN
             if masukan == "SHOP":
-                monster_shop_data,item_shop_data=shop_management(monster_shop_data,item_shop_data) #aman
+                monster_shop_data,item_shop_data=shop_management(monster_data,monster_shop_data,item_shop_data, item_inventory_data) #aman
             elif masukan == "MONSTER":
                 monster_data = monster_management(monster_data) #AMAN
         else: #AKSES: AGENT   
             if masukan=="INVENTORY":
-                inventory(username, id) #AMAN
+                inventory(id, current_oc, monster_inventory_data, monster_data, item_inventory_data) #AMAN
             elif masukan=="BATTLE": #AMAN
                 user_potion, current_oc = battle(username, user_monster, user_potion, monster_data,current_oc) #aman
             elif masukan=="ARENA": #AMAN
-                user_potion, current_oc = arena(username, current_oc)
+                user_potion, current_oc = arena(username, user_monster, user_potion, monster_data,current_oc=0)
             elif masukan=="SHOP":
                 user_monster, user_potion, current_oc, item_shop_data =shop(sudah_login, username) #aman
             elif masukan=="LABORATORY":
