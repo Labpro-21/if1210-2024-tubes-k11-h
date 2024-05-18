@@ -171,11 +171,9 @@ def make_inventory(current_user_id):
     return inventory
 
 
-def shop_management():
+def shop_management(monster_shop_data,item_shop_data):
 
     shop = True
-    monster_shop_data = fetch_data("../main/data/monster_shop.csv")
-    item_shop_data = fetch_data("../main/data/item_shop.csv")
     print("Irasshaimase! Selamat datang kembali, Mr. Monogram!")
     while shop==True:
         aksi = input(">>> Pilih aksi (lihat/tambah/ubah/hapus/keluar): ")
@@ -238,11 +236,11 @@ def shop_management():
                 item_not_in_shop_data = { #inisiasi untuk data item yang tidak ada pada shop
                     "type":[],
                 }
-                for i in range(len(item_inventory_data["type"])): #isi data monster yang tidak ada pada shop
+                for i in range(len(item_inventory_data["type"])): #isi data potion yang tidak ada pada shop
                     if not(item_inventory_data["type"][i] in item_shop_data["type"]):
                         item_not_in_shop_data["type"].append(item_inventory_data["type"][i])
 
-                for i in range(len(item_not_in_shop_data["type"])): #print data monster yang tidak ada pada shop
+                for i in range(len(item_not_in_shop_data["type"])): #print data potion yang tidak ada pada shop
                     print(f"{i+1} | {item_not_in_shop_data['type'][i]} ")
 
                 if len(item_not_in_shop_data["type"])==0:
@@ -250,7 +248,7 @@ def shop_management():
                 else: #isi data item yang tidak ada pada shop
                     while True:
                         id = input(">>> Masukkan id potion: ")
-                        tipe = item_not_in_shop_data["type"][id]
+                        tipe = item_not_in_shop_data["type"][int(id)-1]
                         stock = input(">>> Masukkan stok awal: ")
                         price = input(">>> Masukkan harga: ")
                         if (tipe in item_not_in_shop_data["type"]):
@@ -389,6 +387,7 @@ def shop_management():
                     
         elif aksi=="keluar":
             shop=False
+            return monster_shop_data,item_shop_data
 
 def separate_monster_item_inventory (inventory:dict):
     potion_dict:dict={}
