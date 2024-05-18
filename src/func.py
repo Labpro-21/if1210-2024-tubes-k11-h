@@ -1,26 +1,31 @@
 import time
-from utils import search_index,printDict,isallnumber,validate_input
+from utils import search_index,printDict,isallnumber,validate_input, in_game_validate_input
 
 #REALISASI FUNGSI-FUNGSI
 
 
 
-def register_user(sudah_login, user_data,monster_inventory_data, monster_data, item_inventory_data): #F01
+def register_user(id,username,user_monster,user_potion,sudah_login, user_data,monster_inventory_data, monster_data, item_inventory_data): #F01
+    id = id if id!=0 else 0
+    username = username if username!="" else ""
+    user_potion = user_potion if user_potion!={} else {}
+    user_monster = user_monster if user_monster!={} else {}
     if sudah_login: #ngecek udah login atau belum
         print("Register gagal!")
         print("Anda telah login dengan username Purry, silahkan lakukan “LOGOUT” sebelum melakukan login kembali")
         print()
+        return sudah_login,username,id,user_data,user_monster,user_potion, monster_inventory_data
     else:
         username = input("Masukkan username: ")
         password = input("Masukkan password: ")
         # ngecek username valid atau engga
         if not validate_input(username):
             print("Username hanya boleh berisi alfabet, angka, underscore, dan strip!")
-            register_user(sudah_login, user_data)
+            return sudah_login,username,id,user_data,user_monster,user_potion, monster_inventory_data
         # ngecek udah dipake atau belum
         elif username in user_data['username']:
             print(f"Username {username} sudah terpakai, silahkan gunakan username lain!")
-            register_user(sudah_login, user_data)
+            return sudah_login,username,id,user_data,user_monster,user_potion, monster_inventory_data
         else:
             # registrasi, isi data
             user_data["id"].append(str(len(user_data["id"])+1)) 
@@ -34,7 +39,8 @@ def register_user(sudah_login, user_data,monster_inventory_data, monster_data, i
             print("1. Pikachow")
             print("2. Bulbu")
             print("3. Zeze")
-            monster_choice = int(input("Monster pilihanmu: "))
+            monster_choice = input("Monster pilihanmu: ")
+            monster_choice = int(in_game_validate_input(monster_choice, 3, "Monster pilihanmu: "))
 
             # Print welcome
             monsters = ["Pikachow", "Bulbu", "Zeze"]
@@ -56,10 +62,12 @@ def register_user(sudah_login, user_data,monster_inventory_data, monster_data, i
             # print(monster_inventory_data)
             return sudah_login,username,id,user_data,user_monster,user_potion, monster_inventory_data
 
-def login_user(sudah_login, user_data): #F02
+def login_user(id, username, is_admin, current_oc, sudah_login, user_data): #F02
+    username = username if username!="" else ""
+    current_oc = current_oc if current_oc!=0 else 0
     if sudah_login:
         print("Login gagal!")
-        print("Anda telah login dengan username Purry, silahkan lakukan \“LOGOUT\” sebelum melakukan login kembali")
+        print("Anda telah login dengan username Purry, silahkan lakukan \“LOGOUT\” sebelum melakukan login kembali") 
     else:
         username = input("Masukkan username: ")
         password = input("Masukkan password: ")
@@ -78,13 +86,14 @@ def login_user(sudah_login, user_data): #F02
                 index = search_index(user_data, "username", username) #cari index dimana username berada
                 id = user_data["id"][index]
                 current_oc = user_data["oc"][index]
-                return (sudah_login, username, is_admin, id, current_oc)
+                
             else:
                 print("Password salah!")
                 print()
         else:
             print("Username tidak terdaftar!")
             print()
+    return (sudah_login, username, is_admin, id, current_oc)
 
 def logout_user(sudah_login):
     if sudah_login:
@@ -131,7 +140,7 @@ def inventory(id, current_oc, monster_inventory_data, monster_data, item_invento
             print(f"{key}. {tipe} (Type: {potion_name}, Qty: {quantity}) ")
 
     print()
-    print("Ketikkan id untuk menampilkan detail item:")
+    print("Ketikkan id untuk menampilkan detail item: ")
     pilihan = input(">>> ").upper()
     print()
     while pilihan!="KELUAR":
@@ -141,7 +150,8 @@ def inventory(id, current_oc, monster_inventory_data, monster_data, item_invento
             print("Tidak dapat menampilkan detail item")
 
         print()
-        pilihan = input("Ketikkan id untuk menampilkan detail item: ")
+        print("Ketikkan id untuk menampilkan detail item: ")
+        pilihan = input(">>> ").upper()
         print()
 
 def calc_stats(level:int, base_stats:int):

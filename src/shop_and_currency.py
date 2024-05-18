@@ -9,9 +9,9 @@ def ClearScreen():
         # Linux and macOS
         os.system('clear')
 
-def beli_monster(monster_data, user_monster, monster_shop_data, user_oc):
+def beli_monster(monster_data, user_monster, monster_shop_data, current_oc):
 
-    pilih_monster = int(input("Masukkan ID monster: "))
+    pilih_monster = input("Masukkan ID monster: ")
     
     user_monster_name = []
     for i in range(1, len(user_monster)+1):
@@ -22,7 +22,7 @@ def beli_monster(monster_data, user_monster, monster_shop_data, user_oc):
         index = search_index(monster_data,"type", user_monster_name[i]) #mencari index di monster data yang namanya sama dengan di user inventory 
         id = monster_data["id"][index]              #mengakses id dari tiap nama monster dengan index yang didapat                   
         user_monster_id.append(id)                                   
-
+    print(pilih_monster)
     idx_name_choosen_monster= search_index(monster_data, 'id', pilih_monster) #mencari indeks dari id monster yang ingin dibeli
     name_choosen_monster= monster_data['type'][idx_name_choosen_monster] #mencari nama monster yang dipilih
 
@@ -35,14 +35,14 @@ def beli_monster(monster_data, user_monster, monster_shop_data, user_oc):
         
     else: 
         index=search_index(monster_shop_data, 'monster_id', pilih_monster)
-        harga_monster = monster_shop_data["price"][index]   #mencari harga dari monster yang diinginkan user
+        harga_monster = int(monster_shop_data["price"][index])   #mencari harga dari monster yang diinginkan user
 
 
-        if  user_oc >= harga_monster:
-            user_oc = user_oc - harga_monster
-            monster_shop_data["stock"][index] = monster_shop_data["stock"][index] - 1 # Mengurangi jumlah stok
+        if  current_oc >= harga_monster:
+            current_oc = current_oc - harga_monster
+            monster_shop_data["stock"][index] = str(int(monster_shop_data["stock"][index]) - 1) # Mengurangi jumlah stok
             print(f"Berhasil membeli item: {name_choosen_monster}. Item sudah masuk ke inventory-mu!")
-            print(f"Jumlah O.W.C.A. Coin-mu sekarang {user_oc}")
+            print(f"Jumlah O.W.C.A. Coin-mu sekarang {current_oc}")
 
             banyak_monster_di_inventory=len(user_monster)
 
@@ -59,10 +59,10 @@ def beli_monster(monster_data, user_monster, monster_shop_data, user_oc):
         else : #Jika uang tidak cukup, looping berhenti
             print("OC-mu tidak cukup.")
         
-    return user_monster, user_oc, monster_shop_data
+    return user_monster, current_oc, monster_shop_data
         
 
-def beli_potion(item_shop_data, user_potion, user_oc):
+def beli_potion(item_shop_data, user_potion, current_oc):
     pilih_potion = int(input("Masukkan ID potion: "))
     jumlah_potion = int(input("Masukkan jumlah potion: "))
 
@@ -70,17 +70,16 @@ def beli_potion(item_shop_data, user_potion, user_oc):
         print("Stok potion habis") 
         
     else: 
+        harga_potion = int(item_shop_data["price"][pilih_potion-1]) * jumlah_potion
 
-        harga_potion = item_shop_data["price"] * jumlah_potion
-
-        if  user_oc >= harga_potion:
-            item_shop_data["stock"] = item_shop_data["stock"] - jumlah_potion  # Mengurangi jumlah stok
-            user_oc = user_oc - harga_potion
+        if  current_oc >= harga_potion:
+            item_shop_data["stock"][pilih_potion-1] = str(int(item_shop_data["stock"][pilih_potion-1]) - jumlah_potion)  # Mengurangi jumlah stok
+            current_oc = current_oc - harga_potion
 
             idx_potion=pilih_potion-1
             potion_name=item_shop_data['type'][idx_potion] #mengakses nama dari potion yang dipilih
             print(f"Berhasil membeli item: Potion of {potion_name}. Item sudah masuk ke inventory-mu!")
-            print(f"Jumlah O.W.C.A. Coin-mu sekarang {user_oc}")
+            print(f"Jumlah O.W.C.A. Coin-mu sekarang {current_oc}")
 
             for key in user_potion:
                 if user_potion[key]['Potion_Name']==potion_name:
@@ -88,12 +87,12 @@ def beli_potion(item_shop_data, user_potion, user_oc):
                 break
         else : #Jika uang tidak cukup, looping berhenti
             print("OC-mu tidak cukup.")
-    return user_potion, user_oc, item_shop_data
+    return user_potion, current_oc, item_shop_data
 
 
 
 
-def shop(monster_shop_data,user_data, item_shop_data, user_monster, monster_data):
+def shop(monster_shop_data,user_data, item_shop_data, user_monster, monster_data, current_oc, user_potion):
 
     print("Welcome to SHOP!")
     while True:
@@ -101,12 +100,12 @@ def shop(monster_shop_data,user_data, item_shop_data, user_monster, monster_data
         list_action = ["lihat", "beli", "keluar"]
 
         if action_shop not in list_action:
-            print("Invalid choice. Please try again", end=" ")
+            print("Invalid choice. Please try again")
             for i in range(10):
                 print(".", end="")
                 time.sleep(0.1)
             ClearScreen()
-            shop()
+            shop(monster_shop_data,user_data, item_shop_data, user_monster, monster_data, current_oc, user_potion)
 
         elif action_shop == "lihat":
                 lihat_apa = input(">>> Mau lihat apa? (monster/potion): ")
@@ -124,15 +123,20 @@ def shop(monster_shop_data,user_data, item_shop_data, user_monster, monster_data
 
 
         elif action_shop == "beli":
-            user_oc = int(user_data["oc"])
-            print(f"Jumlah O.W.C.A. Coin-mu sekarang {user_oc}")
-            beli_apa = int(input("Mau beli apa? (monster/potion) "))
+            print(f"Jumlah O.W.C.A. Coin-mu sekarang {current_oc}")
+            beli_apa = input("Mau beli apa? (monster/potion): ")
+            list_action = ["monster", "potion"]
+            
+            while True:
+                if beli_apa in list_action:
+                    break
+                beli_apa = input("Mau beli apa? (monster/potion): ")
             z = True
 
             if beli_apa == "monster":
-                user_monster, user_oc, item_shop_data=beli_monster(monster_data, user_monster, monster_shop_data, user_oc)
+                user_monster, current_oc, item_shop_data=beli_monster(monster_data, user_monster, monster_shop_data, current_oc)
             elif beli_apa == "potion":
-                user_potion, user_oc, item_shop_data=beli_potion(item_shop_data, user_potion, user_oc)
+                user_potion, current_oc, item_shop_data=beli_potion(item_shop_data, user_potion, current_oc)
             continue
         elif action_shop=='keluar' or action_shop=='Keluar' or action_shop=='KELUAR':
-            return user_monster, user_potion, user_oc, item_shop_data  
+            return user_monster, user_potion, current_oc, item_shop_data  

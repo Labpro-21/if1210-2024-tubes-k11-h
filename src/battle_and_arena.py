@@ -1,6 +1,6 @@
 from func import *
 from RNG import *
-
+from utils import in_game_validate_input
 
 def attack(dictionary:dict,victim:dict):
     penentu=RNG(-30,30) #mengambil range dari +-30
@@ -8,6 +8,7 @@ def attack(dictionary:dict,victim:dict):
     victim['HP']=str(int(victim['HP'])-atk_dmg-int((int(victim['DEF_Power'])/100)*atk_dmg))
     if int(victim["HP"])<0:
         victim["HP"]='0'
+    time.sleep(2)
     printDict(victim)
     return victim
 
@@ -56,14 +57,18 @@ def input_potion(user_potion:dict):
         print(f"{elem}. {user_potion[elem]['Type']} Potion (Qty:{user_potion[elem]['Quantity']})")
         index+=1
     print(f"{index}. Cancel")
-    choosen_potion = int(input("Pilih perintah: "))
+    choosen_potion = input("Pilih perintah: ")
     print()
-    while choosen_potion>=index:
-        if choosen_potion>index:
+    while True:
+        if isallnumber(choosen_potion):
+            break
+        choosen_potion = input("Pilih perintah: ")
+    while int(choosen_potion)>=index:
+        if int(choosen_potion)>index:
             print("Pilihan nomor tidak tersedia!")
-        elif choosen_potion==index:
+        elif int(choosen_potion)==index:
             return None
-        choosen_potion = int(input("Pilih perintah: "))
+        choosen_potion = input("Pilih perintah: ")
     return choosen_potion
 
 def user_summon(user_monster:dict, username, monster_data):
@@ -82,7 +87,7 @@ def user_summon(user_monster:dict, username, monster_data):
             done_choosing=True
 
     user_choosen_monster=user_monster[input_monst]
-
+    base_hp = 0
     for i, elem in enumerate (monster_data['type']):
         if elem[i]==user_monster[input_monst]['Name']: #mencari nama yang sama dengan yang di input user di file monster
             base_hp = monster_data['hp'][i]
@@ -103,6 +108,7 @@ def user_summon(user_monster:dict, username, monster_data):
     RAWRRR, {username} mengeluarkan monster {user_monster[input_monst]['Name']} !!!
     '''
     print(gambar)
+    time.sleep(2)
     print()
 
     user_choosen_monster=user_monster[input_monst]
@@ -130,16 +136,20 @@ def war(user_potion, user_choosen_monster, enemy_monster, base_hp):
                 print("1. Attack")
                 print("2. Use Potion")
                 print("3. Quit")
-                move_input=int(input("Pilih perintah: "))
+                move_input = input("Pilih perintah: ")
+                move_input = in_game_validate_input(move_input, 3, "Pilih perintah: ")
+                time.sleep(2)
                 print()
                 while not move:
-                    if move_input==1:
+                    if int(move_input)==1:
                         enemy_monster=attack(use_dict,vict_dict)
                         move=True
                         loop_again=False
                         break
-                    elif move_input==2 :
+                    elif int(move_input)==2 :
+                        
                         choosen_potion=input_potion(user_potion)
+                            
                         if choosen_potion==None: #jika user memilih meng cancel use potion dan akan kembali menginput perintah yang dia inginkan
                             break
                         loop_again=False
@@ -155,10 +165,10 @@ def war(user_potion, user_choosen_monster, enemy_monster, base_hp):
                             user_potion[choosen_potion]['Quantity']=str(int(user_potion[choosen_potion]['Quantity'])-1)
                             drink_heal=True
                         move=True
-                    elif move_input==3:
+                    elif int(move_input)==3:
                         move=True
                         print("Anda berhasil kabur dari BATTLE!")
-                        return
+                        return user_potion, move_input
                     else:
                         print("Pilihan nomor tidak tersedia!")
                 if loop_again: #jika user memilihcancel maka loop dilanjut agar user dapat memilih perintah lain
@@ -169,10 +179,11 @@ def war(user_potion, user_choosen_monster, enemy_monster, base_hp):
             use_dict = enemy_monster
             vict_dict = user_choosen_monster
             print()
+            time.sleep(2)
             print(f"============ TURN {turn} ({use_dict['Name']}) ============")
             user_choosen_monster=attack(use_dict,vict_dict)
             print()
-    return user_potion
+    return user_potion, move_input
 
 def enemy_summon(monster_data, stage=RNG(0,4) ):
     gambar = '''
@@ -190,6 +201,7 @@ def enemy_summon(monster_data, stage=RNG(0,4) ):
    __.-'               '-.__
     '''
     print(gambar)
+    time.sleep(2)
     level_monst=stage
     monst=RNG(0,len(monster_data['id'])-1)
 
@@ -227,13 +239,13 @@ def battle(username, user_monster, user_potion, monster_data,current_oc=0):
 
     enemy_monster = enemy_summon(monster_data)
     user_choosen_monster, base_hp = user_summon(user_monster, username, monster_data)    
-    user_potion = war(user_potion, user_choosen_monster, enemy_monster,base_hp)
+    user_potion, move_input = war(user_potion, user_choosen_monster, enemy_monster,base_hp)
 
     if int(user_choosen_monster["HP"])<=0:
         print()
         print(f"Yahhh, Anda dikalahkan monster {enemy_monster['Name']}. Jangan menyerah, coba lagi !!!")
         print()
-    else:
+    elif int(user_choosen_monster["HP"])>0 and int(move_input)!=3:
         oc_gained = RNG(5,30)
         current_oc+=oc_gained
         print()
@@ -248,16 +260,17 @@ def arena(username, user_monster, user_potion, monster_data,current_oc=0):
     user_choosen_monster,base_hp = user_summon(user_monster, username, monster_data)
     win = True
     stage = 0
-    while win and stage<5:
+    move_input = 0
+    while win and stage<5 and int(move_input)!=3:
         stage+=1
         print(f"============= STAGE {stage} =============")
         enemy_monster = enemy_summon(monster_data,stage)
-        user_potion = war(user_potion, user_choosen_monster, enemy_monster, base_hp)
-        if int(user_choosen_monster["HP"])==0:
+        user_potion,move_input = war(user_potion, user_choosen_monster, enemy_monster, base_hp)
+        if int(user_choosen_monster["HP"])<=0:
             print(f"Yahhh, Anda dikalahkan monster {enemy_monster['Name']}. Jangan menyerah, coba lagi !!!")
             print(f"GAME OVER! Sesi latihan berakhir pada stage {stage}!")
             win = False
-        else:
+        elif int(user_choosen_monster["HP"])>0 and int(move_input)!=3:
             oc_gained = 10+20*stage
             current_oc+=oc_gained
             print(f"Selamat, Anda berhasil mengalahkan monster {enemy_monster['Name']} !!!")

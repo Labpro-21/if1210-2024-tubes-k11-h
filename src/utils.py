@@ -160,3 +160,9 @@ def validate_input(user_input):
             return False
 
     return True
+
+def in_game_validate_input(masukan:str, condition, pesan):
+    while True:
+        if isallnumber(masukan) and int(masukan)<=condition:
+            return masukan
+        masukan = input(pesan)
