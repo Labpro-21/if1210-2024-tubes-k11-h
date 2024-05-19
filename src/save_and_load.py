@@ -1,7 +1,7 @@
 import argparse
 import os
-from utils import write_dict_of_arr, write_dict_of_dict,write_item_inventory,write_monst_inventory,fetch_data
-from func import make_inventory,separate_monster_item_inventory
+from utils import write_dict_of_arr,fetch_data
+from inventory import make_inventory,separate_monster_item_inventory
 
 def load():
     parser = argparse.ArgumentParser(description="Jalankan game dengan folder progres yang diberikan.")
@@ -15,7 +15,7 @@ def load():
     item_shop_data= fetch_data(f'{parent_directory}/item_shop.csv')
     monster_shop_data= fetch_data(f'{parent_directory}/monster_shop.csv')
     monster_data= fetch_data(f'{parent_directory}/monster.csv')
-    user_data = fetch_data(f'{path}/user.csv')
+    user_data = fetch_data(f'{parent_directory}/user.csv')
     monster_inventory_data = fetch_data(f'{path}/monster_inventory.csv')
     item_inventory_data = fetch_data(f'{path}/item_inventory.csv')
 
@@ -54,13 +54,15 @@ def save(id: str, user_data: dict,monster_inventory_data: dict,item_inventory_da
 
         file_path_monster=os.path.join(new_folder, "monster_inventory.csv") 
         file_path_item=os.path.join(new_folder, "item_inventory.csv")
-        file_path_user_data=os.path.join(new_folder, "user.csv")
-
-        invent=make_inventory(id)
-        monster,item=separate_monster_item_inventory(invent)
-
-        item_in_inventory=write_item_inventory(item_inventory_data, item, id)
-        monster_in_inventory=write_monst_inventory(monster_inventory_data, monster, id)
+        file_path_user_data=os.path.join(parent_directory, "user.csv")
+        file_path_item_shop_data=os.path.join(parent_directory, "item_shop.csv")
+        file_path_monster_shop_data=os.path.join(parent_directory, "monster_shop.csv")
+        
+        
+        monster_in_shop=write_dict_of_arr(monster_shop)
+        item_in_shop=write_dict_of_arr(item_shop)
+        item_in_inventory=write_dict_of_arr(item_inventory_data)
+        monster_in_inventory=write_dict_of_arr(monster_inventory_data)
         new_user=write_dict_of_arr(user_data)
         
 
@@ -68,8 +70,12 @@ def save(id: str, user_data: dict,monster_inventory_data: dict,item_inventory_da
             file.write(monster_in_inventory)
         with open(file_path_item, mode='w', newline='') as file:
             file.write(item_in_inventory)
+        with open(file_path_item_shop_data, mode='w', newline='') as file:
+            file.write(item_in_shop)
         with open(file_path_user_data, mode='w', newline='') as file:
             file.write(new_user)
+        with open(file_path_monster_shop_data, mode='w', newline='') as file:
+            file.write(monster_in_shop)
     print("Saving...")
 
 

@@ -35,7 +35,7 @@ def parser(value, splitter=";"):
 
 def search_index(data, key, value):
     index = 0
-    while index<=len(data) and data[key][index] != value:
+    while index<=len(data[key]) and data[key][index] != value:
         index+=1
     if index == len(data)+1: #kalau gak ketemu
         return -9999
@@ -79,67 +79,6 @@ def write_dict_of_arr(dictionary:dict ):
             idx+=1
     return sentence
 
-
-def write_monst_inventory(monster_inventory_data, monst, id, monster_data):
-    arr_modified=[]
-    print(monst)
-
-    for key in monst:   #aku pengen outputnya agar bentuknya [id, monst_id, level]
-        monst_id=str(search_index(monster_data, 'type', monst[key]["Name"])+1)
-        monst_level=str(monst[key]['Level'])
-        arr_modified.append([id, monst_id, monst_level])
-    
-    sentence=write_dict_of_dict(monster_inventory_data, arr_modified, 'level', id)
-    return sentence
-
-def write_item_inventory(item_inventory_data , item, id ):
-    arr_modified=[]
-
-    for key in item:   #aku pengen outputnya agar bentuknya [id, monst_id, level]
-        potion_name=str(item[key]["Type"])
-        quantity=str(item[key]['Quantity'])
-        arr_modified.append([id, potion_name, quantity])
-    sentence=write_dict_of_dict(item_inventory_data, arr_modified, 'quantity', id)
-    return sentence
-
-def write_dict_of_dict(data, arr_modified, last_column, id):
-    sentence=''
-    many_column=len(data)
-    already_modified=False
-    first_elem=None
-    idx=0
-
-    for key in data:
-        first_elem=key
-        break
-
-    for key in data: 
-        if  idx!=many_column-1:
-            sentence=sentence+f'{key}'+';'
-        else:
-            sentence=sentence+f'{key}'+'\n'
-        idx+=1
-
-    idx=0
-
-    for i in  range (len(data[f'{first_elem}'])):
-        for key in data:
-            item=data[key][idx]
-            user_id=data[f'{first_elem}'][idx]
-            if not already_modified and int(user_id) == int(id):
-                for elem in arr_modified:
-                    sentence=sentence + elem[0]+';'+ elem[1]+ ';'+ elem[2]+ '\n'
-                already_modified=True
-            elif key==f'{last_column}' and int(user_id) != int(id):
-                sentence=sentence +f"{item}"+ "\n" 
-            elif int(user_id) != int(id) and idx!=many_column-1:
-                sentence= sentence + f'{item}' + ';'
-
-            continue
-        idx+=1
-    return sentence
-
-
 def isallnumber(string):
     angka = ['0','1','2','3','4','5','6','7','8','9']
     for i in string:
@@ -161,8 +100,9 @@ def validate_input(user_input):
 
     return True
 
-def in_game_validate_input(masukan:str, condition, pesan):
+def in_game_validate_input(masukan:str, condition, pesan,warning=''):
     while True:
-        if isallnumber(masukan) and int(masukan)<=condition:
+        if isallnumber(masukan) and 0<int(masukan)<=condition :
             return masukan
+        print(warning)
         masukan = input(pesan)

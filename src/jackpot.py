@@ -1,3 +1,6 @@
+from utils import fetch_data
+from RNG import RNG
+
 def jackpot():
     user_oc_data = fetch_data("../main/data/user.csv")
 
