@@ -15,7 +15,7 @@ from exit import exit
 from shop_management import shop_management
 from register import register_user
 from login_logout import login_user,logout_user
-
+from jackpot import jackpot
 
 sudah_login=False
 is_admin=False
@@ -58,7 +58,5 @@ while program:
                 monster_inventory_data, item_inventory_data, current_oc, item_shop_data = shop(monster_shop_data, item_shop_data, monster_data, current_oc, monster_inventory_data, item_inventory_data, id) 
             elif masukan=="LABORATORY":#aman100
                 user_monster, current_oc = laboratory(username,current_oc, monster_inventory_data, item_inventory_data, id,monster_data) #AMAN
-        
-        
-
-
+            elif masukan =="JACKPOT":
+                current_oc, monster_inventory_data = jackpot(current_oc,id, monster_inventory_data)

@@ -260,7 +260,7 @@ def battle(user_id,
            monster_data: DictOfArr,
            current_oc:int=0) -> Tuple[DictOfArr,int]:
     user_monster,user_potion=separate_monster_item_inventory(make_inventory(user_id, monster_inventory_data, monster_data, item_inventory_data))
-    print(user_potion)
+    
     enemy_monster = enemy_summon(monster_data)
     user_choosen_monster, base_hp, monster_name = user_summon(user_monster, username, monster_data)    
     item_inventory_data, move_input = war(user_potion, user_choosen_monster, enemy_monster,base_hp , item_inventory_data, user_id, monster_name)
