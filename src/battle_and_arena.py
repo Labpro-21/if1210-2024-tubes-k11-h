@@ -79,7 +79,7 @@ def input_potion(user_potion:DictOfDict) -> str:
 def user_summon(user_monster:dict, 
                 username: str, 
                 monster_data: DictOfArr) -> Tuple[DictOfArr, int, str]: 
-    print("Selamat datang di Arena!!")
+    print("Selamat datang di Arena Pertempuran!!")
     print("============ MONSTER LIST ============")
     for key in user_monster:
         print(f"{key}. {user_monster[key]['Name']}")
@@ -123,6 +123,14 @@ def user_summon(user_monster:dict,
     printDict(user_choosen_monster) 
     return user_choosen_monster, base_hp, monster_name
 
+def update_item_inventory(item_inventory_data, user_id, user_potion):
+    for i,item in enumerate (item_inventory_data['user_id']):
+        indexing=1
+        if item==str(user_id):
+            item_inventory_data['quantity'][i]=user_potion[indexing]['Quantity']
+            indexing+=1
+    return item_inventory_data
+
 def war(user_potion:DictOfDict, 
         user_choosen_monster:DictOfArr, 
         enemy_monster, 
@@ -153,6 +161,7 @@ def war(user_potion:DictOfDict,
                 time.sleep(2)
                 print()
                 while not move:
+                    item_inventory_data = update_item_inventory(item_inventory_data, user_id, user_potion)
                     if int(move_input)==1:
                         enemy_monster=attack(use_dict,vict_dict)
                         move=True
@@ -181,7 +190,7 @@ def war(user_potion:DictOfDict,
                     elif int(move_input)==3:
                         move=True
                         print("Anda berhasil kabur dari BATTLE!")
-                        return user_potion, move_input
+                        return item_inventory_data, move_input
                     else:
                         print("Pilihan nomor tidak tersedia!")
                 if loop_again: #jika user memilihcancel maka loop dilanjut agar user dapat memilih perintah lain
@@ -196,12 +205,10 @@ def war(user_potion:DictOfDict,
             print(f"============ TURN {turn} ({use_dict['Name']}) ============")
             user_choosen_monster=attack(use_dict,vict_dict)
             print()
-    for i,item in enumerate (item_inventory_data['user_id']):
-        indexing=1
-        if item==str(user_id):
-            item_inventory_data['quantity'][i]=user_potion[indexing]['Type']
-            indexing+=1
+
     return item_inventory_data, move_input
+
+
 
 def enemy_summon(monster_data:DictOfArr, stage=RNG(1,5) ) -> Dict[str, Union[str,int]]:
     gambar = '''
@@ -259,6 +266,7 @@ def battle(user_id,
            item_inventory_data: DictOfArr, 
            monster_data: DictOfArr,
            current_oc:int=0) -> Tuple[DictOfArr,int]:
+    
     user_monster,user_potion=separate_monster_item_inventory(make_inventory(user_id, monster_inventory_data, monster_data, item_inventory_data))
     
     enemy_monster = enemy_summon(monster_data)
