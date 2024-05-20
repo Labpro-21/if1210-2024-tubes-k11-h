@@ -326,9 +326,6 @@ def arena(user_id, username: str,
             print('STAGE CLEARED! Anda akan mendapatkan 200 OC pada sesi ini!')
             print('Selamat, Anda berhasil menyelesaikan seluruh stage Arena !!!')
 
-
-
-        # for key in user_potion:
     print(f"============= STATS =============")
     print(f"Total hadiah: {oc_gained_total}")
     print(f"Jumlah stage: {stage}")
