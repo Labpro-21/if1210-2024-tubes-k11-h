@@ -6,15 +6,15 @@ from typing import Dict, List, Tuple, Union, Optional
 DictOfArr = Dict[str, List[Union[str, int]]]
 DictOfDict = Dict[str, Dict[str, Union[str, int]]]
 
-def attack(dictionary:dict,victim:dict) -> dict:
+def attack(dictionary:dict,victim:dict) -> Tuple[dict, int]:
     penentu=RNG(-30,30) #mengambil range dari +-30
     atk_dmg=int(dictionary['ATK_Power'])+int((penentu/100)*int(dictionary['ATK_Power'])) #pembulatan ke bawah
-    victim['HP']=str(int(victim['HP'])-atk_dmg-int((int(victim['DEF_Power'])/100)*atk_dmg))
+    victim['HP']=str(int(victim['HP'])-atk_dmg+int((int(victim['DEF_Power'])/100)*atk_dmg))
     if int(victim["HP"])<0:
         victim["HP"]='0'
     time.sleep(2)
     printDict(victim)
-    return victim
+    return victim, atk_dmg
 
 def usepotion(user_potion: DictOfDict, user_choosen_monster: DictOfArr, base_hp: int, 
               cond_str: bool, cond_def:bool, cond_heal:bool, choosen_potion:int) -> DictOfArr:
@@ -141,6 +141,8 @@ def war(user_potion:DictOfDict,
     drink_def=False
     drink_heal=False
     turn = 0
+    atk_given_total = 0
+    atk_gained_total = 0 
     while int(user_choosen_monster['HP'])>0 and int(enemy_monster["HP"])>0: #Battle
         loop_again=True   #-->untuk menentukan apakah user tdk jadi memilih potion
         turn+=1
@@ -163,7 +165,8 @@ def war(user_potion:DictOfDict,
                 while not move:
                     item_inventory_data = update_item_inventory(item_inventory_data, user_id, user_potion)
                     if int(move_input)==1:
-                        enemy_monster=attack(use_dict,vict_dict)
+                        enemy_monster, atk_given = attack(use_dict,vict_dict)
+                        atk_given_total+=atk_given
                         move=True
                         loop_again=False
                         break
@@ -203,10 +206,11 @@ def war(user_potion:DictOfDict,
             print()
             time.sleep(2)
             print(f"============ TURN {turn} ({use_dict['Name']}) ============")
-            user_choosen_monster=attack(use_dict,vict_dict)
+            user_choosen_monster, atk_gained=attack(use_dict,vict_dict)
+            atk_gained_total+=atk_gained - int((int(vict_dict['DEF_Power'])/100)*atk_gained)
             print()
 
-    return item_inventory_data, move_input
+    return item_inventory_data, move_input, atk_given_total, atk_gained_total
 
 
 
@@ -271,7 +275,7 @@ def battle(user_id,
     
     enemy_monster = enemy_summon(monster_data)
     user_choosen_monster, base_hp, monster_name = user_summon(user_monster, username, monster_data)    
-    item_inventory_data, move_input = war(user_potion, user_choosen_monster, enemy_monster,base_hp , item_inventory_data, user_id, monster_name)
+    item_inventory_data, move_input, atk_given_total, atk_gained_total = war(user_potion, user_choosen_monster, enemy_monster,base_hp , item_inventory_data, user_id, monster_name)
 
     if int(user_choosen_monster["HP"])<=0:
         print()
@@ -298,21 +302,29 @@ def arena(user_id, username: str,
     win = True
     stage = 0
     move_input = 0
+    oc_gained_total = 0
+    atk_given_total = 0
+    atk_gained_total = 0
     while win and stage<5 and int(move_input)!=3:
         stage+=1
         print(f"============= STAGE {stage} =============")
         enemy_monster = enemy_summon(monster_data,stage)
-        item_inventory_data,move_input = war(user_potion, user_choosen_monster, enemy_monster,base_hp , item_inventory_data, user_id,monster_name)
-        if int(user_choosen_monster["HP"])<=0:
+        item_inventory_data, move_input, atk_given_total, atk_gained_total = war(user_potion, user_choosen_monster, enemy_monster,base_hp , item_inventory_data, user_id,monster_name)
+        if int(user_choosen_monster["HP"])<=0 or int(move_input)==3:
             print(f"Yahhh, Anda dikalahkan monster {enemy_monster['Name']}. Jangan menyerah, coba lagi !!!")
             print(f"GAME OVER! Sesi latihan berakhir pada stage {stage}!")
             win = False
         elif int(user_choosen_monster["HP"])>0 and int(move_input)!=3:
             oc_gained = 10+20*stage
+            oc_gained_total+=oc_gained
             current_oc+=oc_gained
             print(f"Selamat, Anda berhasil mengalahkan monster {enemy_monster['Name']} !!!")
             print(f"STAGE CLEARED! Anda akan mendapatkan {oc_gained} OC pada sesi ini!")
             print(f"Memulai stage berikutnya...")
         # for key in user_potion:
-
+    print(f"============= STATS =============")
+    print(f"Total hadiah: {oc_gained_total}")
+    print(f"Jumlah stage: {stage}")
+    print(f"Damage diberikan: {atk_given_total}")
+    print(f"Damage diterima: {atk_gained_total}")
     return item_inventory_data,current_oc
