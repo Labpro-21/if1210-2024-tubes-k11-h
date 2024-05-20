@@ -1,9 +1,19 @@
 from utils import validate_input, in_game_validate_input
-from func import make_inventory,separate_monster_item_inventory
+from inventory import make_inventory,separate_monster_item_inventory
+from typing import Dict, List, Tuple, Union, Optional
+
+DictOfArr = Dict[str, List[Union[str, int]]]
+DictOfDict = Dict[str, Dict[str, Union[str, int]]]
+
 #REALISASI FUNGSI-FUNGSI
-
-
-def register_user(id,username,user_monster,user_potion,sudah_login, user_data,monster_inventory_data, monster_data, item_inventory_data): #F01
+def register_user(id,username: str,
+                  user_monster: DictOfArr,
+                  user_potion: DictOfDict,
+                  sudah_login: bool, 
+                  user_data: DictOfArr,
+                  monster_inventory_data: DictOfArr, 
+                  monster_data: DictOfArr, 
+                  item_inventory_data: DictOfArr) -> Tuple[bool, str, Union[str,int], DictOfArr,DictOfDict,DictOfDict,DictOfArr]: #F01
     id = id if id!=0 else 0
     username = username if username!="" else ""
     user_potion = user_potion if user_potion!={} else {}

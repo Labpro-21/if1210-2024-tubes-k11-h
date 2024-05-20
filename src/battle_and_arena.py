@@ -1,8 +1,12 @@
-from func import *
 from RNG import *
-from utils import in_game_validate_input
+from utils import in_game_validate_input, printDict, isallnumber
+from inventory import separate_monster_item_inventory, make_inventory, calc_stats
+from typing import Dict, List, Tuple, Union, Optional
 
-def attack(dictionary:dict,victim:dict):
+DictOfArr = Dict[str, List[Union[str, int]]]
+DictOfDict = Dict[str, Dict[str, Union[str, int]]]
+
+def attack(dictionary:dict,victim:dict) -> dict:
     penentu=RNG(-30,30) #mengambil range dari +-30
     atk_dmg=int(dictionary['ATK_Power'])+int((penentu/100)*int(dictionary['ATK_Power'])) #pembulatan ke bawah
     victim['HP']=str(int(victim['HP'])-atk_dmg-int((int(victim['DEF_Power'])/100)*atk_dmg))
@@ -12,7 +16,8 @@ def attack(dictionary:dict,victim:dict):
     printDict(victim)
     return victim
 
-def usepotion(user_potion:dict, user_choosen_monster:dict, base_hp, cond_str: bool, cond_def:bool, cond_heal:bool,choosen_potion:int):
+def usepotion(user_potion: DictOfDict, user_choosen_monster: DictOfArr, base_hp: int, 
+              cond_str: bool, cond_def:bool, cond_heal:bool, choosen_potion:int) -> DictOfArr:
     move=False
     monster_name=user_choosen_monster['Name']
     while not move:
@@ -33,7 +38,7 @@ def usepotion(user_potion:dict, user_choosen_monster:dict, base_hp, cond_str: bo
         else:
             print("Pilihan nomor tidak tersedia!")
 
-def potion(potion:str, arr:list, base_hp, monster_name):      #arr= [atk,def,hp]
+def potion(potion:str, arr:list, base_hp:int, monster_name: str) ->int:      #arr= [atk,def,hp]
     if potion=='STRENGTH':
         new= int(arr[0])+0.05*int(arr[0])
         print(f"Setelah meminum ramuan ini, aura kekuatan terlihat mengelilingi {monster_name} dan gerakannya menjadi lebih cepat dan mematikan.")
@@ -50,7 +55,7 @@ def potion(potion:str, arr:list, base_hp, monster_name):      #arr= [atk,def,hp]
         else:
             return int(arr[2])
         
-def input_potion(user_potion:dict):
+def input_potion(user_potion:DictOfDict) -> str:
     print("============ POTION LIST ============")
     index=1
     for elem in (user_potion): 
@@ -71,7 +76,9 @@ def input_potion(user_potion:dict):
         choosen_potion = input("Pilih perintah: ")
     return choosen_potion
 
-def user_summon(user_monster:dict, username, monster_data):
+def user_summon(user_monster:dict, 
+                username: str, 
+                monster_data: DictOfArr) -> Tuple[DictOfArr, int, str]: 
     print("Selamat datang di Arena!!")
     print("============ MONSTER LIST ============")
     for key in user_monster:
@@ -116,7 +123,12 @@ def user_summon(user_monster:dict, username, monster_data):
     printDict(user_choosen_monster) 
     return user_choosen_monster, base_hp, monster_name
 
-def war(user_potion, user_choosen_monster, enemy_monster, base_hp, item_inventory_data, user_id, monster_name):
+def war(user_potion:DictOfDict, 
+        user_choosen_monster:DictOfArr, 
+        enemy_monster, 
+        base_hp:int, 
+        item_inventory_data:DictOfArr, 
+        user_id, monster_name) -> Tuple[DictOfArr, str]:
     drink_strength=False
     drink_def=False
     drink_heal=False
@@ -191,7 +203,7 @@ def war(user_potion, user_choosen_monster, enemy_monster, base_hp, item_inventor
             indexing+=1
     return item_inventory_data, move_input
 
-def enemy_summon(monster_data, stage=RNG(1,5) ):
+def enemy_summon(monster_data:DictOfArr, stage=RNG(1,5) ) -> Dict[str, Union[str,int]]:
     gambar = '''
            _/\----/\   
           /         \     /\\
@@ -241,7 +253,12 @@ def enemy_summon(monster_data, stage=RNG(1,5) ):
 
 
 
-def battle(user_id, username, monster_inventory_data, item_inventory_data, monster_data,current_oc=0):
+def battle(user_id, 
+           username: str, 
+           monster_inventory_data: DictOfArr, 
+           item_inventory_data: DictOfArr, 
+           monster_data: DictOfArr,
+           current_oc:int=0) -> Tuple[DictOfArr,int]:
     user_monster,user_potion=separate_monster_item_inventory(make_inventory(user_id, monster_inventory_data, monster_data, item_inventory_data))
     print(user_potion)
     enemy_monster = enemy_summon(monster_data)
@@ -263,7 +280,11 @@ def battle(user_id, username, monster_inventory_data, item_inventory_data, monst
 
     return item_inventory_data, current_oc
 
-def arena(user_id, username, monster_inventory_data, item_inventory_data, monster_data,current_oc=0):
+def arena(user_id, username: str, 
+          monster_inventory_data: DictOfArr, 
+          item_inventory_data: DictOfArr, 
+          monster_data: DictOfArr,
+          current_oc: int = 0) -> Tuple[DictOfArr,int]:
     user_monster,user_potion=separate_monster_item_inventory(make_inventory(user_id, monster_inventory_data, monster_data, item_inventory_data))
     user_choosen_monster,base_hp, monster_name = user_summon(user_monster, username, monster_data)
     win = True

@@ -1,5 +1,10 @@
+from typing import Dict, List, Tuple, Union, Optional
+
+DictOfArr = Dict[str, List[Union[str, int]]]
+DictOfDict = Dict[str, Dict[str, Union[str, int]]]
+
 #HELPER FUNCTION
-def fetch_data(path):
+def fetch_data(path: str) -> DictOfArr:
     data = {}
 
     file = open(path, 'r')
@@ -20,7 +25,7 @@ def fetch_data(path):
     
     return data
 
-def parser(value, splitter=";"):
+def parser(value:str, splitter:str=";") -> List:
     arr = []
     kata=""
     for i in value:
@@ -33,7 +38,7 @@ def parser(value, splitter=";"):
         arr.append(kata)
     return arr
 
-def search_index(data, key, value):
+def search_index(data: DictOfArr, key: str, value:Union[str,int]) -> int :
     index = 0
     while index<=len(data[key]) and data[key][index] != value:
         index+=1
@@ -42,12 +47,12 @@ def search_index(data, key, value):
     else:
         return index #indeks kalau ketemu
     
-def printDict(dictionary):
+def printDict(dictionary: dict):
     for key in dictionary:
         print(f"{key}: {dictionary[key]}")
 
 
-def write_dict_of_arr(dictionary:dict ):
+def write_dict_of_arr(dictionary:DictOfArr) -> str:
     first_elem=None
 
     for key in dictionary:
@@ -79,14 +84,14 @@ def write_dict_of_arr(dictionary:dict ):
             idx+=1
     return sentence
 
-def isallnumber(string):
+def isallnumber(string:str) -> bool:
     angka = ['0','1','2','3','4','5','6','7','8','9']
     for i in string:
         if i not in angka:
             return False
     return True
 
-def validate_input(user_input):
+def validate_input(user_input: str) -> bool:
     # Check if input is not all digits
     if isallnumber(user_input):
         return False
@@ -100,7 +105,7 @@ def validate_input(user_input):
 
     return True
 
-def in_game_validate_input(masukan:str, condition, pesan,warning=''):
+def in_game_validate_input(masukan:str, condition:int, pesan:str ,warning:str='') -> bool:
     while True:
         if isallnumber(masukan) and 0<int(masukan)<=condition :
             return masukan

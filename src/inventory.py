@@ -1,8 +1,15 @@
 import time
 from utils import search_index,printDict,isallnumber,validate_input, in_game_validate_input
+from typing import Dict, List, Tuple, Union, Optional
+
+DictOfArr = Dict[str, List[Union[str, int]]]
+DictOfDict = Dict[str, Dict[str, Union[str, int]]]
 
 #REALISASI FUNGSI-FUNGSI
-def inventory(id, current_oc, monster_inventory_data, monster_data, item_inventory_data):#F07
+def inventory(id, current_oc:int,
+              monster_inventory_data: DictOfArr, 
+              monster_data: DictOfArr, 
+              item_inventory_data: DictOfArr):#F07
     
     print(f"=======INVENTORY LIST (User ID: {id})=======")
     print(f"Jumlah O.W.C.A. Coin-mu sekarang {current_oc}.")
@@ -36,11 +43,13 @@ def inventory(id, current_oc, monster_inventory_data, monster_data, item_invento
         pilihan = input(">>> ").upper()
         print()
 
-def calc_stats(level:int, base_stats:int):
+def calc_stats(level:int, base_stats:int) ->int:
     battle_stats=int(base_stats)+(level-1)*0.1*int(base_stats)
     return int(battle_stats)        
 
-def make_inventory(user_id, monster_inventory_data, monster_data, item_inventory_data):
+def make_inventory(user_id, monster_inventory_data: DictOfArr, 
+                   monster_data: DictOfArr, 
+                   item_inventory_data: DictOfArr) -> DictOfArr:
     id=1
     inventory = {}
     for i in range(len(monster_inventory_data["user_id"])): #iterasi semua data pada monster_inventory
@@ -80,7 +89,7 @@ def make_inventory(user_id, monster_inventory_data, monster_data, item_inventory
     return inventory
 
 
-def separate_monster_item_inventory (inventory:dict):
+def separate_monster_item_inventory (inventory: DictOfArr) -> DictOfDict:
     potion_dict:dict={}
     user_monster:dict={}
 

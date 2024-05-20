@@ -2,8 +2,12 @@ import argparse
 import os
 from utils import write_dict_of_arr,fetch_data
 from inventory import make_inventory,separate_monster_item_inventory
+from typing import Dict, List, Tuple, Union, Optional
 
-def load():
+DictOfArr = Dict[str, List[Union[str, int]]]
+DictOfDict = Dict[str, Dict[str, Union[str, int]]]
+
+def load() -> Tuple[DictOfArr, DictOfArr, DictOfArr, DictOfArr, DictOfArr, DictOfArr]:
     parser = argparse.ArgumentParser(description="Jalankan game dengan folder progres yang diberikan.")
     parser.add_argument('folder_name', type=str, nargs='?', default='default_data', help="Nama folder tempat progres peif1210-2024-tubes-k11-h disimpan")
 
@@ -22,7 +26,14 @@ def load():
     return user_data,monster_data,monster_inventory_data,item_inventory_data,item_shop_data,monster_shop_data
 
 
-def save(id: str, user_data: dict,monster_inventory_data: dict,item_inventory_data:dict, monster_shop:dict,item_shop:dict, monster_data:dict, is_admin:bool):
+def save(id: Union[str,int], 
+         user_data: DictOfArr,
+         monster_inventory_data: DictOfArr,
+         item_inventory_data: DictOfArr, 
+         monster_shop: DictOfArr,
+         item_shop: DictOfArr, 
+         monster_data: DictOfArr, 
+         is_admin:bool):
 
     parent_directory = '../if1210-2024-tubes-k11-h/data'
     

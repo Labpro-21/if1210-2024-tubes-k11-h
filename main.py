@@ -28,7 +28,7 @@ while program:
     masukan = input(">>>").upper()
     if masukan == "REGISTER": #aman100
         sudah_login,username,id,user_data,user_monster,user_potion, monster_inventory_data = register_user(id,username,user_monster,user_potion,sudah_login, user_data,monster_inventory_data, monster_data, item_inventory_data)
-        current_oc = 1000
+        current_oc = 0
     elif masukan =="LOGIN": #aman100
         sudah_login, username, is_admin, id,current_oc = login_user(id, username, is_admin, sudah_login, user_data)
         user_monster, user_potion = separate_monster_item_inventory(make_inventory(id, monster_inventory_data, monster_data, item_inventory_data))
@@ -44,7 +44,7 @@ while program:
             save(id, user_data,monster_inventory_data,item_inventory_data, monster_shop_data,item_shop_data, monster_data, is_admin)
         if is_admin:#AKSES: ADMIN
             if masukan == "SHOP":
-                monster_shop_data,item_shop_data=shop_management(monster_data,monster_shop_data,item_shop_data, item_inventory_data) #aman
+                monster_shop_data,item_shop_data = shop_management(monster_data,monster_shop_data,item_shop_data) #aman
             elif masukan == "MONSTER":
                 monster_data = monster_management(monster_data) #AMAN
         else: #AKSES: AGENT   
@@ -55,7 +55,7 @@ while program:
             elif masukan=="ARENA": #AMAN100
                 user_potion, current_oc = arena(id, username, monster_inventory_data, item_inventory_data, monster_data,current_oc)
             elif masukan=="SHOP": #aman100
-                monster_inventory_data, item_inventory_data, current_oc, item_shop_data =shop(monster_shop_data, item_shop_data, monster_data, current_oc, monster_inventory_data, item_inventory_data, id) 
+                monster_inventory_data, item_inventory_data, current_oc, item_shop_data = shop(monster_shop_data, item_shop_data, monster_data, current_oc, monster_inventory_data, item_inventory_data, id) 
             elif masukan=="LABORATORY":#aman100
                 user_monster, current_oc = laboratory(username,current_oc, monster_inventory_data, item_inventory_data, id,monster_data) #AMAN
         

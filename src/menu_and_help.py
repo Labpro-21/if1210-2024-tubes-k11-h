@@ -1,8 +1,9 @@
-from func import *
 from battle_and_arena import *
 from laboratory import *
 
-def help(sudah_login, is_Admin, username):
+def help(sudah_login: bool, 
+         is_Admin: bool, 
+         username: str):
     if sudah_login:
         if is_Admin:
             print("=========== HELP ===========")

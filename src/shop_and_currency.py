@@ -1,7 +1,12 @@
 import time
 import os
 from utils import search_index,in_game_validate_input
-from func import separate_monster_item_inventory,make_inventory
+from inventory import separate_monster_item_inventory,make_inventory
+from typing import Dict, List, Tuple, Union, Optional
+
+DictOfArr = Dict[str, List[Union[str, int]]]
+DictOfDict = Dict[str, Dict[str, Union[str, int]]]
+
 def ClearScreen():
     if os.name == 'nt':
         # Windows
@@ -10,7 +15,12 @@ def ClearScreen():
         # Linux and macOS
         os.system('clear')
 
-def beli_monster(monster_data, monster_shop_data, current_oc, monster_inventory_data, item_inventory_data, id_user):
+def beli_monster(monster_data: DictOfArr, 
+                 monster_shop_data: DictOfArr, 
+                 current_oc: int, 
+                 monster_inventory_data: DictOfArr, 
+                 item_inventory_data: DictOfArr, 
+                 id_user) -> Tuple[DictOfArr, int, DictOfArr]:
     user_monster,user_potion= separate_monster_item_inventory(make_inventory(str(id_user), monster_inventory_data, monster_data,item_inventory_data))
     pilih_monster = input("Masukkan ID monster: ")
     while True:
@@ -66,7 +76,11 @@ def beli_monster(monster_data, monster_shop_data, current_oc, monster_inventory_
     return monster_inventory_data, current_oc, monster_shop_data
         
 
-def beli_potion(item_shop_data, current_oc, monster_inventory_data, item_inventory_data, id, monster_data):
+def beli_potion(item_shop_data: DictOfArr, 
+                current_oc: int, 
+                monster_inventory_data: DictOfArr, 
+                item_inventory_data: DictOfArr, id, 
+                monster_data: DictOfArr) -> Tuple[DictOfArr, int, DictOfArr]:
     user_monster,user_potion= separate_monster_item_inventory(make_inventory(str(id), monster_inventory_data, monster_data,item_inventory_data))
     pilih_potion = input("Masukkan ID potion: ")
     pilih_potion=int(in_game_validate_input(pilih_potion, len(item_shop_data['type']), "Masukkan ID potion: ", 'Mohon masukkan ID yang benar'))
@@ -106,7 +120,12 @@ def beli_potion(item_shop_data, current_oc, monster_inventory_data, item_invento
 
 
 
-def shop(monster_shop_data, item_shop_data, monster_data, current_oc, monster_inventory_data, item_inventory_data, id_user):
+def shop(monster_shop_data: DictOfArr, 
+         item_shop_data: DictOfArr, 
+         monster_data: DictOfArr, 
+         current_oc: int, 
+         monster_inventory_data: DictOfArr, 
+         item_inventory_data: DictOfArr, id_user) ->Tuple[DictOfArr, DictOfArr, int, DictOfArr]:
 
     print("Welcome to SHOP!")
     while True:

@@ -1,9 +1,17 @@
 from utils import search_index,printDict,isallnumber,validate_input, in_game_validate_input
+from typing import Dict, List, Tuple, Union, Optional
+
+DictOfArr = Dict[str, List[Union[str, int]]]
+DictOfDict = Dict[str, Dict[str, Union[str, int]]]
 
 #REALISASI FUNGSI-FUNGSI
 
 
-def login_user(id, username, is_admin, sudah_login, user_data, current_oc=0): #F02
+def login_user(id, username:str, 
+               is_admin: bool, 
+               sudah_login: bool, 
+               user_data: DictOfArr, 
+               current_oc:int=0) -> Tuple[bool,str,bool,Union[str,int],int]: #F02
     username = username if username!="" else ""
     current_oc = current_oc if current_oc!=0 else 0
     if sudah_login:
@@ -26,7 +34,7 @@ def login_user(id, username, is_admin, sudah_login, user_data, current_oc=0): #F
                 sudah_login = True
                 index = search_index(user_data, "username", username) #cari index dimana username berada
                 id = user_data["id"][index]
-                current_oc = user_data["oc"][index]
+                current_oc = int(user_data["oc"][index])
                 
             else:
                 print("Password salah!")
@@ -36,7 +44,7 @@ def login_user(id, username, is_admin, sudah_login, user_data, current_oc=0): #F
             print()
     return (sudah_login, username, is_admin, id, current_oc)
 
-def logout_user(sudah_login):
+def logout_user(sudah_login:bool) -> bool:
     if sudah_login:
         sudah_login = False
         print("Anda berhasil logout")

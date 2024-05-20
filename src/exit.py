@@ -1,7 +1,18 @@
 import time
+from typing import Dict, List, Tuple, Union, Optional
 from save_and_load import save
 
-def exit(program, id: str, user_data: dict,monster_inventory_data: dict,item_inventory_data:dict, monster_shop:dict,item_shop:dict, monster_data:dict, is_admin:bool):
+DictOfArr = Dict[str, List[Union[str, int]]]
+
+def exit(program:bool, 
+         id: str, 
+         user_data: DictOfArr,
+         monster_inventory_data: DictOfArr,
+         item_inventory_data:DictOfArr, 
+         monster_shop:DictOfArr,
+         item_shop:DictOfArr,
+         monster_data:DictOfArr, 
+         is_admin:bool) -> bool:
     print("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (y/n)")
     choice = input("Enter your choice: ").upper()
 

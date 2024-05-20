@@ -1,6 +1,9 @@
 from utils import in_game_validate_input,isallnumber
+from typing import Dict, List, Tuple, Union, Optional
 
-def monster_management(monster_data):
+DictOfArr = Dict[str, List[Union[str, int]]]
+
+def monster_management(monster_data: DictOfArr) -> DictOfArr:
     print("SELAMAT DATANG DI DATABASE PARA MONSTER !!!")
     print("1. Tampilkan semua Monster")
     print("2. Tambah Monster baru")

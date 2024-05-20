@@ -1,5 +1,12 @@
 from utils import search_index, isallnumber,in_game_validate_input
-def shop_management(monster_data,monster_shop_data,item_shop_data, item_inventory_data):
+from typing import Dict, List, Tuple, Union, Optional
+
+DictOfArr = Dict[str, List[Union[str, int]]]
+DictOfDict = Dict[str, Dict[str, Union[str, int]]]
+
+def shop_management(monster_data: DictOfArr,
+                    monster_shop_data: DictOfArr,
+                    item_shop_data: DictOfArr) -> Tuple[DictOfArr,DictOfArr]:
 
     shop = True
     print("Irasshaimase! Selamat datang kembali, Mr. Monogram!")
