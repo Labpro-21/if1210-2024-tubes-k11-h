@@ -107,7 +107,6 @@ def shop_management(monster_data: DictOfArr,
 
 
                     print(f"{item_not_in_shop_data['type'][int(id)-1]} telah berhasil ditambahkan ke dalam shop!")
-
                     item_not_in_shop_data['type'].pop(int(id)-1)
 
 
@@ -200,10 +199,10 @@ def shop_management(monster_data: DictOfArr,
                             if yakin == "y":
                                 index = search_index(monster_data, "id", id)
                                 print(f"{monster_data['type'][index]} telah berhasil dihapus dari shop!")
-                                
-                                monster_shop_data["monster_id"].pop(int(id)-1)
-                                monster_shop_data["stock"].pop(int(id)-1)
-                                monster_shop_data["price"].pop(int(id)-1)
+                                index = search_index(monster_not_in_shop_data, 'id', id)
+                                monster_shop_data["monster_id"].pop(index)
+                                monster_shop_data["stock"].pop(index)
+                                monster_shop_data["price"].pop(index)
                                 break
                         else: print("Masukan salah! silahkan ulang!")
             elif hapus_apa=="potion":

@@ -193,7 +193,7 @@ def war(user_potion:DictOfDict,
                     elif int(move_input)==3:
                         move=True
                         print("Anda berhasil kabur dari BATTLE!")
-                        return item_inventory_data, move_input
+                        return item_inventory_data, move_input, atk_given_total, atk_gained_total
                     else:
                         print("Pilihan nomor tidak tersedia!")
                 if loop_again: #jika user memilihcancel maka loop dilanjut agar user dapat memilih perintah lain
@@ -305,13 +305,16 @@ def arena(user_id, username: str,
     oc_gained_total = 0
     atk_given_total = 0
     atk_gained_total = 0
+    hp_user_monster=user_choosen_monster['HP']
     while win and stage<5 and int(move_input)!=3:
+        user_choosen_monster['HP']=hp_user_monster
         stage+=1
         print(f"============= STAGE {stage} =============")
         enemy_monster = enemy_summon(monster_data,stage)
         item_inventory_data, move_input, atk_given_total, atk_gained_total = war(user_potion, user_choosen_monster, enemy_monster,base_hp , item_inventory_data, user_id,monster_name)
         if int(user_choosen_monster["HP"])<=0 or int(move_input)==3:
-            print(f"Yahhh, Anda dikalahkan monster {enemy_monster['Name']}. Jangan menyerah, coba lagi !!!")
+            if int(user_choosen_monster['HP']<=0):
+                print(f"Yahhh, Anda dikalahkan monster {enemy_monster['Name']}. Jangan menyerah, coba lagi !!!")
             print(f"GAME OVER! Sesi latihan berakhir pada stage {stage}!")
             win = False
         elif int(user_choosen_monster["HP"])>0 and int(move_input)!=3:

@@ -1,9 +1,8 @@
+from inventory import *
 from battle_and_arena import *
 from laboratory import *
 
-def help(sudah_login: bool, 
-         is_Admin: bool, 
-         username: str):
+def help(sudah_login, is_Admin, username):
     if sudah_login:
         if is_Admin:
             print("=========== HELP ===========")
