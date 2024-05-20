@@ -1,6 +1,4 @@
-user_id;type;quantity
-2;Strength;5
-2;Resilience;3
-3;Resilience;7
-4;Healing;3
-5;Strength;20
+type;stock;price
+Strength;10;50
+Resilience;5;30
+Healing;3;20
