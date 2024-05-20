@@ -321,6 +321,13 @@ def arena(user_id, username: str,
             print(f"Selamat, Anda berhasil mengalahkan monster {enemy_monster['Name']} !!!")
             print(f"STAGE CLEARED! Anda akan mendapatkan {oc_gained} OC pada sesi ini!")
             print(f"Memulai stage berikutnya...")
+        elif stage==5 and int(user_choosen_monster["HP"])>0:
+            print('Selamat, Anda berhasil mengalahkan monster Zeze !!!')
+            print('STAGE CLEARED! Anda akan mendapatkan 200 OC pada sesi ini!')
+            print('Selamat, Anda berhasil menyelesaikan seluruh stage Arena !!!')
+
+
+
         # for key in user_potion:
     print(f"============= STATS =============")
     print(f"Total hadiah: {oc_gained_total}")
