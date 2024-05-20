@@ -75,13 +75,14 @@ def jackpot(user_oc:int, user_id, monster_inventory_data: DictOfArr) -> Tuple[in
                 if item_1 == item_2 and item_2 == item_3:
                     #cek apakah monster pernah didapat
                     cek_monster = False
-                    for i in range(len(monster_inventory_data)):
-                        if monster_inventory_data['monster_id'] == '6':
+                    for i in range(len(monster_inventory_data['monster_id'])):
+                        if monster_inventory_data['monster_id'][i] == '6':
+                            cek_monster = True
                             break
 
                     if cek_monster:
                         print("JACKPOT!!! Selamat, Anda mendapatkan monster sikasik.")
-                        print("Anda telah memiliki monster sikasik, monster dikonversi menjadi 500 OC!")
+                        print("Anda telah memiliki monster sikasik, monster dikonversi menjadi 800 OC!")
                         user_oc+=800
                     else:
                         print("JACKPOT!!! Selamat, Anda mendapatkan monster sikasik.")
