@@ -37,7 +37,7 @@ while program:
     elif masukan == "LOGOUT": #aman100
         sudah_login = logout_user(sudah_login)
     elif masukan == "EXIT":
-        program = exit(program, id, user_data,monster_inventory_data,item_inventory_data, monster_shop_data, item_inventory_data, monster_data, is_admin)
+        program = exit(program, id, user_data,monster_inventory_data,item_inventory_data, monster_shop_data, item_shop_data, monster_data, is_admin)
 
     if sudah_login:
         if masukan == "SAVE":

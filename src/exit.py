@@ -9,15 +9,15 @@ def exit(program:bool,
          user_data: DictOfArr,
          monster_inventory_data: DictOfArr,
          item_inventory_data:DictOfArr, 
-         monster_shop:DictOfArr,
-         item_shop:DictOfArr,
+         monster_shop_data:DictOfArr,
+         item_shop_data:DictOfArr,
          monster_data:DictOfArr, 
          is_admin:bool) -> bool:
     print("Apakah Anda mau melakukan penyimpanan file yang sudah diubah? (y/n)")
     choice = input("Enter your choice: ").upper()
 
     if choice == "Y":
-        save(id, user_data,monster_inventory_data,item_inventory_data, monster_shop,item_shop, monster_data, is_admin)
+        save(id, user_data,monster_inventory_data,item_inventory_data, monster_shop_data,item_shop_data, monster_data, is_admin)
     elif choice == "N":
         program = False
     else:
