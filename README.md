@@ -12,6 +12,7 @@ Rifqi Bambang Ar Rasyid (16523100)
 Zhafar Umar (16523240)
 
 # Features
+Register, Login, Logout, Shop, Battle, Arena, Shop, Inventory, Shop Management, Monster Management, LaboratoryLoad, Save, Exit
 
 # How to Run
-Open main.py, direct to other features
+Buka main.py, ketik "help", lalu ikuti perintah
